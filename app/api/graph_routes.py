@@ -1,7 +1,11 @@
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+)
 from langgraph.types import Command
 
 from app.graph.healthcare_rag_hitl_graph import (
@@ -17,6 +21,10 @@ from app.models.graph_response import (
 )
 from app.persistence.postgres_checkpointer import (
     get_postgres_checkpointer,
+)
+from app.security.easyauth import (
+    require_authenticated_user,
+    require_reviewer,
 )
 
 
@@ -97,6 +105,9 @@ def extract_interrupt_payload(
 )
 def start_graph_run(
     request: GraphStartRequest,
+    principal: dict = Depends(
+        require_authenticated_user
+    ),
 ) -> GraphRunResponse:
 
     thread_id = str(
@@ -108,13 +119,10 @@ def start_graph_run(
     )
 
     try:
-
         with get_postgres_checkpointer() as checkpointer:
 
-            graph = (
-                build_healthcare_rag_hitl_graph(
-                    checkpointer
-                )
+            graph = build_healthcare_rag_hitl_graph(
+                checkpointer
             )
 
             result = graph.invoke(
@@ -125,14 +133,11 @@ def start_graph_run(
                 config=config,
             )
 
-        review_payload = (
-            extract_interrupt_payload(
-                result
-            )
+        review_payload = extract_interrupt_payload(
+            result
         )
 
         if review_payload is not None:
-
             return GraphRunResponse(
                 thread_id=thread_id,
                 status="waiting_for_review",
@@ -159,14 +164,70 @@ def start_graph_run(
         )
 
     except Exception as exc:
-
         raise HTTPException(
             status_code=500,
             detail={
                 "thread_id": thread_id,
-                "error": (
-                    "graph_execution_failed"
-                ),
+                "error": "graph_execution_failed",
+                "detail": str(exc),
+            },
+        ) from exc
+
+
+@router.get(
+    "/{thread_id}",
+)
+def get_graph_state(
+    thread_id: str,
+    principal: dict = Depends(
+        require_authenticated_user
+    ),
+) -> dict:
+
+    config = build_config(
+        thread_id
+    )
+
+    try:
+        with get_postgres_checkpointer() as checkpointer:
+
+            graph = build_healthcare_rag_hitl_graph(
+                checkpointer
+            )
+
+            snapshot = graph.get_state(
+                config
+            )
+
+        if not snapshot.values:
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "thread_id": thread_id,
+                    "error": "thread_not_found",
+                },
+            )
+
+        return {
+            "thread_id": thread_id,
+            "values": snapshot.values,
+            "next": list(snapshot.next),
+            "created_at": getattr(
+                snapshot,
+                "created_at",
+                None,
+            ),
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "thread_id": thread_id,
+                "error": "state_read_failed",
                 "detail": str(exc),
             },
         ) from exc
@@ -179,6 +240,9 @@ def start_graph_run(
 def review_graph_run(
     thread_id: str,
     request: GraphReviewRequest,
+    principal: dict = Depends(
+        require_reviewer
+    ),
 ) -> GraphRunResponse:
 
     config = build_config(
@@ -186,13 +250,10 @@ def review_graph_run(
     )
 
     try:
-
         with get_postgres_checkpointer() as checkpointer:
 
-            graph = (
-                build_healthcare_rag_hitl_graph(
-                    checkpointer
-                )
+            graph = build_healthcare_rag_hitl_graph(
+                checkpointer
             )
 
             snapshot = graph.get_state(
@@ -200,36 +261,28 @@ def review_graph_run(
             )
 
             if not snapshot.values:
-
                 raise HTTPException(
                     status_code=404,
                     detail={
                         "thread_id": thread_id,
-                        "error": (
-                            "thread_not_found"
-                        ),
+                        "error": "thread_not_found",
                     },
                 )
 
             result = graph.invoke(
                 Command(
                     resume={
-                        "approved": (
-                            request.approved
-                        )
+                        "approved": request.approved
                     }
                 ),
                 config=config,
             )
 
-        review_payload = (
-            extract_interrupt_payload(
-                result
-            )
+        review_payload = extract_interrupt_payload(
+            result
         )
 
         if review_payload is not None:
-
             return GraphRunResponse(
                 thread_id=thread_id,
                 status="waiting_for_review",
@@ -267,79 +320,11 @@ def review_graph_run(
         raise
 
     except Exception as exc:
-
         raise HTTPException(
             status_code=500,
             detail={
                 "thread_id": thread_id,
-                "error": (
-                    "graph_resume_failed"
-                ),
-                "detail": str(exc),
-            },
-        ) from exc
-
-
-@router.get(
-    "/{thread_id}",
-)
-def get_graph_state(
-    thread_id: str,
-) -> dict:
-
-    config = build_config(
-        thread_id
-    )
-
-    try:
-
-        with get_postgres_checkpointer() as checkpointer:
-
-            graph = (
-                build_healthcare_rag_hitl_graph(
-                    checkpointer
-                )
-            )
-
-            snapshot = graph.get_state(
-                config
-            )
-
-        if not snapshot.values:
-
-            raise HTTPException(
-                status_code=404,
-                detail={
-                    "thread_id": thread_id,
-                    "error": "thread_not_found",
-                },
-            )
-
-        return {
-            "thread_id": thread_id,
-            "values": snapshot.values,
-            "next": list(
-                snapshot.next
-            ),
-            "created_at": getattr(
-                snapshot,
-                "created_at",
-                None,
-            ),
-        }
-
-    except HTTPException:
-        raise
-
-    except Exception as exc:
-
-        raise HTTPException(
-            status_code=500,
-            detail={
-                "thread_id": thread_id,
-                "error": (
-                    "state_read_failed"
-                ),
+                "error": "graph_resume_failed",
                 "detail": str(exc),
             },
         ) from exc
