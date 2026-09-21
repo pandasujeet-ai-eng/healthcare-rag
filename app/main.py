@@ -2,9 +2,6 @@ from app.observability.azure_monitor import (
     configure_monitoring,
 )
 
-
-# Configure OpenTelemetry before creating
-# the FastAPI application.
 configure_monitoring()
 
 
@@ -13,52 +10,47 @@ from fastapi.middleware.cors import (
     CORSMiddleware,
 )
 
-from app.api.routes import router
+from app.api.graph_routes import (
+    router as graph_router,
+)
+from app.api.routes import (
+    router as api_router,
+)
 
 
 APP_NAME = (
     "Healthcare Knowledge Assistant"
 )
 
-APP_VERSION = "0.7.0"
+APP_VERSION = "0.17.0"
 
 
 app = FastAPI(
     title=APP_NAME,
     version=APP_VERSION,
-    description=(
-        "Production-style healthcare RAG API "
-        "using LangChain, Azure OpenAI, "
-        "Azure AI Search, LangSmith and "
-        "Azure Application Insights."
-    ),
     docs_url="/docs",
     redoc_url="/redoc",
 )
 
 
-# DEV configuration.
-#
-# We will restrict origins before production
-# deployment.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "*"
-    ],
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=[
         "GET",
         "POST",
     ],
-    allow_headers=[
-        "*"
-    ],
+    allow_headers=["*"],
 )
 
 
 app.include_router(
-    router
+    api_router
+)
+
+app.include_router(
+    graph_router
 )
 
 
@@ -67,9 +59,9 @@ app.include_router(
     tags=["Service"],
 )
 def root() -> dict:
+
     return {
         "service": APP_NAME,
         "version": APP_VERSION,
         "status": "running",
-        "documentation": "/docs",
     }
