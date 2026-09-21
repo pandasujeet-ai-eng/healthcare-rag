@@ -1,0 +1,9 @@
+Document ID: POL-AN-001
+Title: Preoperative Fasting Guideline
+Version: 1.0
+Section: Fasting
+Page: 2
+
+For this training dataset, patients should follow the fasting instructions documented in the approved preoperative plan.
+
+This sample policy is synthetic and intended only for development and testing.

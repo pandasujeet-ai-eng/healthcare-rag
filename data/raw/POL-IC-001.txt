@@ -1,0 +1,9 @@
+Document ID: POL-IC-001
+Title: Infection Control Guidance
+Version: 1.1
+Section: General Precautions
+Page: 1
+
+Staff must follow approved infection-control and hand-hygiene procedures before and after patient contact.
+
+This sample policy is synthetic and intended only for development and testing.

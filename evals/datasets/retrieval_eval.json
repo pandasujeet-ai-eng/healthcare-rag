@@ -1,0 +1,32 @@
+[
+  {
+    "id": "Q001",
+    "question": "When should metformin be stopped before surgery?",
+    "expected_chunk_id": "POL-DM-001-C0001"
+  },
+  {
+    "id": "Q002",
+    "question": "What are the fasting instructions before an operation?",
+    "expected_chunk_id": "POL-AN-001-C0001"
+  },
+  {
+    "id": "Q003",
+    "question": "What hygiene precautions should staff follow around patients?",
+    "expected_chunk_id": "POL-IC-001-C0001"
+  },
+  {
+    "id": "Q004",
+    "question": "Should diabetes medicine be taken on the morning of an operation?",
+    "expected_chunk_id": "POL-DM-001-C0001"
+  },
+  {
+    "id": "Q005",
+    "question": "What should staff do before and after patient contact?",
+    "expected_chunk_id": "POL-IC-001-C0001"
+  },
+  {
+  "id": "Q006",
+  "question": "What antibiotic is recommended for malaria?",
+  "expected_chunk_id": null
+}
+]

@@ -1,0 +1,14 @@
+.venv
+venv
+__pycache__
+.pytest_cache
+.git
+.github
+.env
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+.vscode
+.idea
+data/processed/*.tmp

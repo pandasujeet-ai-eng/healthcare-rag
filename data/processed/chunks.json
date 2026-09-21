@@ -1,0 +1,44 @@
+[
+  {
+    "metadata": {
+      "document_id": "POL-AN-001",
+      "title": "Preoperative Fasting Guideline",
+      "version": "1.0",
+      "section": "Fasting",
+      "page": 2,
+      "source_file": "POL-AN-001.txt",
+      "chunk_id": "POL-AN-001-C0001",
+      "chunk_index": 1,
+      "chunk_size_chars": 200
+    },
+    "content": "For this training dataset, patients should follow the fasting instructions documented in the approved preoperative plan.\n\nThis sample policy is synthetic and intended only for development and testing."
+  },
+  {
+    "metadata": {
+      "document_id": "POL-DM-001",
+      "title": "Preoperative Diabetes Management Policy",
+      "version": "3.2",
+      "section": "Medication Management",
+      "page": 4,
+      "source_file": "POL-DM-001.txt",
+      "chunk_id": "POL-DM-001-C0001",
+      "chunk_index": 1,
+      "chunk_size_chars": 236
+    },
+    "content": "For this training dataset, patients taking metformin should stop metformin on the morning of surgery unless otherwise directed by the responsible physician.\n\nThis sample policy is synthetic and intended only for development and testing."
+  },
+  {
+    "metadata": {
+      "document_id": "POL-IC-001",
+      "title": "Infection Control Guidance",
+      "version": "1.1",
+      "section": "General Precautions",
+      "page": 1,
+      "source_file": "POL-IC-001.txt",
+      "chunk_id": "POL-IC-001-C0001",
+      "chunk_index": 1,
+      "chunk_size_chars": 186
+    },
+    "content": "Staff must follow approved infection-control and hand-hygiene procedures before and after patient contact.\n\nThis sample policy is synthetic and intended only for development and testing."
+  }
+]

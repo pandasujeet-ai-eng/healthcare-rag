@@ -1,0 +1,9 @@
+Document ID: POL-DM-001
+Title: Preoperative Diabetes Management Policy
+Version: 3.2
+Section: Medication Management
+Page: 4
+
+For this training dataset, patients taking metformin should stop metformin on the morning of surgery unless otherwise directed by the responsible physician.
+
+This sample policy is synthetic and intended only for development and testing.
