@@ -15,9 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get(
-    "/whoami",
-)
+@router.get("/whoami")
 def whoami(
     principal: dict[str, Any] = Depends(
         require_authenticated_user

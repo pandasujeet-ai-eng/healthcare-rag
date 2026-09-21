@@ -16,13 +16,13 @@ from app.api.graph_routes import (
 from app.api.routes import (
     router as api_router,
 )
-
-
-APP_NAME = (
-    "Healthcare Knowledge Assistant"
+from app.api.security_routes import (
+    router as security_router,
 )
 
-APP_VERSION = "0.17.0"
+
+APP_NAME = "Healthcare Knowledge Assistant"
+APP_VERSION = "0.19.0"
 
 
 app = FastAPI(
@@ -51,6 +51,10 @@ app.include_router(
 
 app.include_router(
     graph_router
+)
+
+app.include_router(
+    security_router
 )
 
 
