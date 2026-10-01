@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 permissions:
   contents: read
   id-token: write
+
 
 env:
   PYTHON_VERSION: "3.11"
@@ -22,12 +24,13 @@ env:
 
   IMAGE_NAME: "healthcare-rag"
 
-  # ---------------------------------------------------------
-  # CI / TEST runtime
-  # ---------------------------------------------------------
+  # =========================================================
+  # CI TEST ENVIRONMENT
+  # =========================================================
 
   APP_ENV: "test"
   CHECKPOINT_BACKEND: "sqlite"
+
   AUTH_MODE: "dev"
   DEV_REVIEWER: "true"
 
@@ -35,6 +38,10 @@ env:
 
 
 jobs:
+
+  # =========================================================
+  # QUALITY GATES
+  # =========================================================
 
   quality-gates:
 
@@ -74,54 +81,87 @@ jobs:
 
       - name: Validate required AI secrets
         shell: bash
+
         env:
+
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+
           AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+
           AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }}
 
+          AZURE_OPENAI_API_VERSION: ${{ secrets.AZURE_OPENAI_API_VERSION }}
+
           AZURE_SEARCH_ENDPOINT: ${{ secrets.AZURE_SEARCH_ENDPOINT }}
+
           AZURE_SEARCH_API_KEY: ${{ secrets.AZURE_SEARCH_API_KEY }}
+
           AZURE_SEARCH_INDEX_NAME: ${{ secrets.AZURE_SEARCH_INDEX_NAME }}
 
         run: |
+
           set -e
 
           test -n "$AZURE_OPENAI_ENDPOINT"
+
           test -n "$AZURE_OPENAI_API_KEY"
+
           test -n "$AZURE_OPENAI_EMBEDDING_DEPLOYMENT"
+
           test -n "$AZURE_OPENAI_CHAT_DEPLOYMENT"
 
+          test -n "$AZURE_OPENAI_API_VERSION"
+
           test -n "$AZURE_SEARCH_ENDPOINT"
+
           test -n "$AZURE_SEARCH_API_KEY"
+
           test -n "$AZURE_SEARCH_INDEX_NAME"
 
           echo "Required AI secrets are configured."
 
 
       - name: Run AI quality gates
+
         env:
+
           APP_ENV: "test"
+
           AUTH_MODE: "dev"
+
           DEV_REVIEWER: "true"
+
           CHECKPOINT_BACKEND: "sqlite"
 
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+
           AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+
           AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+
           AZURE_OPENAI_API_VERSION: ${{ secrets.AZURE_OPENAI_API_VERSION }}
 
           AZURE_SEARCH_ENDPOINT: ${{ secrets.AZURE_SEARCH_ENDPOINT }}
+
           AZURE_SEARCH_API_KEY: ${{ secrets.AZURE_SEARCH_API_KEY }}
+
           AZURE_SEARCH_INDEX_NAME: ${{ secrets.AZURE_SEARCH_INDEX_NAME }}
 
           APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
         run: |
+
           python -m scripts.run_ci_quality_gates
 
 
+
+  # =========================================================
+  # BUILD + DEPLOY
+  # =========================================================
 
   deploy:
 
@@ -132,8 +172,22 @@ jobs:
     needs:
       - quality-gates
 
-    environment:
-      name: development
+    # IMPORTANT:
+    #
+    # Do NOT add:
+    #
+    # environment:
+    #   name: development
+    #
+    # Our Azure federated identity credential is bound to:
+    #
+    # repo:...:ref:refs/heads/main
+    #
+    # Adding a GitHub Environment changes the OIDC subject to:
+    #
+    # repo:...:environment:development
+    #
+    # and Azure login will fail with AADSTS700213.
 
     steps:
 
@@ -141,30 +195,55 @@ jobs:
         uses: actions/checkout@v4
 
 
+      # =====================================================
+      # AZURE OIDC LOGIN
+      # =====================================================
+
       - name: Azure login
         uses: azure/login@v2
         with:
+
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
 
+      # =====================================================
+      # ACR LOGIN
+      # =====================================================
+
       - name: Login to ACR
+
         run: |
+
           az acr login \
             --name "${ACR_NAME}"
 
 
+      # =====================================================
+      # BUILD IMAGE
+      # =====================================================
+
       - name: Build Docker image
+
         run: |
+
           docker build \
             -t "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}" \
             -t "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest" \
             .
 
 
+      # =====================================================
+      # PUSH IMAGE
+      # =====================================================
+
       - name: Push Docker image
+
         run: |
+
           docker push \
             "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}"
 
@@ -172,8 +251,14 @@ jobs:
             "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest"
 
 
+      # =====================================================
+      # DEPLOY CONTAINER APP
+      # =====================================================
+
       - name: Deploy Container App
+
         run: |
+
           az containerapp update \
             --name "${CONTAINER_APP_NAME}" \
             --resource-group "${AZURE_RESOURCE_GROUP}" \
@@ -184,9 +269,16 @@ jobs:
               CHECKPOINT_BACKEND=sqlite
 
 
+      # =====================================================
+      # GET FQDN
+      # =====================================================
+
       - name: Get Container App FQDN
+
         id: containerapp
+
         run: |
+
           FQDN=$(az containerapp show \
             --name "${CONTAINER_APP_NAME}" \
             --resource-group "${AZURE_RESOURCE_GROUP}" \
@@ -196,12 +288,20 @@ jobs:
           echo "fqdn=${FQDN}" >> "$GITHUB_OUTPUT"
 
           echo "Container App FQDN:"
+
           echo "${FQDN}"
 
 
+      # =====================================================
+      # HEALTH CHECK
+      # =====================================================
+
       - name: Health check
+
         shell: bash
+
         run: |
+
           set -e
 
           FQDN="${{ steps.containerapp.outputs.fqdn }}"
@@ -222,12 +322,14 @@ jobs:
 
               echo
               echo "Health check passed."
+
               exit 0
 
             fi
 
             echo
             echo "Attempt ${i}/20 failed."
+
             echo "Waiting 15 seconds..."
 
             sleep 15
@@ -235,28 +337,40 @@ jobs:
           done
 
           echo "Health check failed."
+
           exit 1
 
 
+      # =====================================================
+      # DEPLOYMENT SUMMARY
+      # =====================================================
+
       - name: Deployment summary
+
         run: |
+
           echo "### Healthcare RAG Deployment" >> "$GITHUB_STEP_SUMMARY"
+
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           echo "**Commit:**" >> "$GITHUB_STEP_SUMMARY"
+
           echo "\`${GITHUB_SHA}\`" >> "$GITHUB_STEP_SUMMARY"
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           echo "**Image:**" >> "$GITHUB_STEP_SUMMARY"
+
           echo "\`${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}\`" >> "$GITHUB_STEP_SUMMARY"
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           echo "**Container App:**" >> "$GITHUB_STEP_SUMMARY"
+
           echo "\`${CONTAINER_APP_NAME}\`" >> "$GITHUB_STEP_SUMMARY"
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           echo "**FQDN:**" >> "$GITHUB_STEP_SUMMARY"
+
           echo "https://${{ steps.containerapp.outputs.fqdn }}" >> "$GITHUB_STEP_SUMMARY"
