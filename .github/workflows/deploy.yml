@@ -4,101 +4,438 @@ on:
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
+  id-token: write
+
 
 env:
-  RESOURCE_GROUP: rg-healthcare-rag-dev
-  ACR_NAME: acrhealthcareragdevsk
-  ACR_LOGIN_SERVER: acrhealthcareragdevsk.azurecr.io
-  IMAGE_NAME: healthcare-rag
-  CONTAINER_APP_NAME: ca-healthcare-rag-dev
+  PYTHON_VERSION: "3.11"
+
+  AZURE_RESOURCE_GROUP: "rg-healthcare-rag-dev"
+
+  ACR_NAME: "acrhealthcareragdevsk"
+
+  ACR_LOGIN_SERVER: "acrhealthcareragdevsk.azurecr.io"
+
+  CONTAINER_APP_NAME: "ca-healthcare-rag-dev"
+
+  IMAGE_NAME: "healthcare-rag"
+
+  CHECKPOINT_BACKEND: "sqlite"
+
+  AUTH_MODE: "dev"
+
+  DEV_REVIEWER: "true"
+
+  LANGSMITH_TRACING: "false"
+
 
 jobs:
-  test-build-deploy:
+
+  # ===================================================================
+  # JOB 1
+  #
+  # AI / SOFTWARE QUALITY GATES
+  # ===================================================================
+
+  quality-gates:
+
+    name: AI Quality Gates
+
     runs-on: ubuntu-latest
 
+    timeout-minutes: 30
+
     steps:
+
+      # ---------------------------------------------------------------
+      # Checkout
+      # ---------------------------------------------------------------
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
+
+      # ---------------------------------------------------------------
+      # Python
+      # ---------------------------------------------------------------
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+
+      # ---------------------------------------------------------------
+      # Dependencies
+      # ---------------------------------------------------------------
+
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install -r requirements.txt
 
-      - name: Run CI tests
+
+      # ---------------------------------------------------------------
+      # Local runtime folders
+      #
+      # SQLite + tool-runtime files are temporary CI state.
+      # ---------------------------------------------------------------
+
+      - name: Create runtime directories
         run: |
-          pytest -q
+          mkdir -p data/checkpoints
+          mkdir -p data/tool_runtime
 
-      - name: Azure login with OIDC
+
+      # ---------------------------------------------------------------
+      # Validate important environment inputs
+      #
+      # We validate presence without printing secret values.
+      # ---------------------------------------------------------------
+
+      - name: Validate AI configuration
+        env:
+
+          AZURE_OPENAI_ENDPOINT: >-
+            ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+
+          AZURE_OPENAI_API_KEY: >-
+            ${{ secrets.AZURE_OPENAI_API_KEY }}
+
+          AZURE_OPENAI_EMBEDDING_DEPLOYMENT: >-
+            ${{ secrets.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+
+          AZURE_OPENAI_CHAT_DEPLOYMENT: >-
+            ${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+
+          AZURE_SEARCH_ENDPOINT: >-
+            ${{ secrets.AZURE_SEARCH_ENDPOINT }}
+
+          AZURE_SEARCH_API_KEY: >-
+            ${{ secrets.AZURE_SEARCH_API_KEY }}
+
+          AZURE_SEARCH_INDEX_NAME: >-
+            ${{ secrets.AZURE_SEARCH_INDEX_NAME }}
+
+        shell: bash
+
+        run: |
+
+          python - <<'PY'
+
+          import os
+          import sys
+
+
+          required = [
+              "AZURE_OPENAI_ENDPOINT",
+              "AZURE_OPENAI_API_KEY",
+              "AZURE_OPENAI_EMBEDDING_DEPLOYMENT",
+              "AZURE_OPENAI_CHAT_DEPLOYMENT",
+              "AZURE_SEARCH_ENDPOINT",
+              "AZURE_SEARCH_API_KEY",
+              "AZURE_SEARCH_INDEX_NAME",
+          ]
+
+
+          missing = [
+              name
+              for name in required
+              if not os.getenv(name)
+          ]
+
+
+          if missing:
+
+              print(
+                  "Missing required GitHub "
+                  "Actions secrets:"
+              )
+
+              for name in missing:
+                  print(
+                      f" - {name}"
+                  )
+
+              sys.exit(1)
+
+
+          print(
+              "Required AI configuration "
+              "is present."
+          )
+
+          PY
+
+
+      # ---------------------------------------------------------------
+      # Full CI gate
+      # ---------------------------------------------------------------
+
+      - name: Run AI quality gates
+        env:
+
+          AZURE_OPENAI_ENDPOINT: >-
+            ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+
+          AZURE_OPENAI_API_KEY: >-
+            ${{ secrets.AZURE_OPENAI_API_KEY }}
+
+          AZURE_OPENAI_EMBEDDING_DEPLOYMENT: >-
+            ${{ secrets.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+
+          AZURE_OPENAI_CHAT_DEPLOYMENT: >-
+            ${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+
+          AZURE_OPENAI_API_VERSION: >-
+            ${{ secrets.AZURE_OPENAI_API_VERSION }}
+
+          AZURE_SEARCH_ENDPOINT: >-
+            ${{ secrets.AZURE_SEARCH_ENDPOINT }}
+
+          AZURE_SEARCH_API_KEY: >-
+            ${{ secrets.AZURE_SEARCH_API_KEY }}
+
+          AZURE_SEARCH_INDEX_NAME: >-
+            ${{ secrets.AZURE_SEARCH_INDEX_NAME }}
+
+          APPLICATIONINSIGHTS_CONNECTION_STRING: >-
+            ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+
+        run: |
+          python -m scripts.run_ci_quality_gates
+
+
+  # ===================================================================
+  # JOB 2
+  #
+  # BUILD + DEPLOY
+  #
+  # This job CANNOT start unless quality-gates passes.
+  # ===================================================================
+
+  deploy:
+
+    name: Build and Deploy
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 30
+
+    needs:
+      - quality-gates
+
+    steps:
+
+      # ---------------------------------------------------------------
+      # Checkout
+      # ---------------------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      # ---------------------------------------------------------------
+      # Azure authentication using OIDC
+      # ---------------------------------------------------------------
+
+      - name: Azure login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Login to ACR
+          client-id: >-
+            ${{ secrets.AZURE_CLIENT_ID }}
+
+          tenant-id: >-
+            ${{ secrets.AZURE_TENANT_ID }}
+
+          subscription-id: >-
+            ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+      # ---------------------------------------------------------------
+      # ACR login
+      # ---------------------------------------------------------------
+
+      - name: Log in to Azure Container Registry
         run: |
-          az acr login --name $ACR_NAME
+          az acr login \
+            --name "${ACR_NAME}"
+
+
+      # ---------------------------------------------------------------
+      # Docker build
+      #
+      # Immutable SHA tag is the deployment artifact.
+      # latest is only a convenience pointer.
+      # ---------------------------------------------------------------
 
       - name: Build Docker image
         run: |
+
           docker build \
-            -t $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
-            -t $ACR_LOGIN_SERVER/$IMAGE_NAME:latest \
+            -t "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}" \
+            -t "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest" \
             .
+
+
+      # ---------------------------------------------------------------
+      # Push
+      # ---------------------------------------------------------------
 
       - name: Push Docker image
         run: |
-          docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
-          docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
 
-      - name: Deploy to Azure Container Apps
+          docker push \
+            "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}"
+
+          docker push \
+            "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:latest"
+
+
+      # ---------------------------------------------------------------
+      # Deploy exact SHA
+      # ---------------------------------------------------------------
+
+      - name: Deploy Azure Container App
         run: |
+
           az containerapp update \
-            --name $CONTAINER_APP_NAME \
-            --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
+            --name "${CONTAINER_APP_NAME}" \
+            --resource-group "${AZURE_RESOURCE_GROUP}" \
+            --image "${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}"
 
-      - name: Get Container App FQDN
-        id: fqdn
+
+      # ---------------------------------------------------------------
+      # Obtain FQDN
+      # ---------------------------------------------------------------
+
+      - name: Get application FQDN
+        id: app-url
+        shell: bash
         run: |
-          FQDN=$(az containerapp show \
-            --name $CONTAINER_APP_NAME \
-            --resource-group $RESOURCE_GROUP \
-            --query properties.configuration.ingress.fqdn \
-            --output tsv)
 
-          echo "fqdn=$FQDN" >> "$GITHUB_OUTPUT"
+          FQDN=$(
+            az containerapp show \
+              --name "${CONTAINER_APP_NAME}" \
+              --resource-group "${AZURE_RESOURCE_GROUP}" \
+              --query "properties.configuration.ingress.fqdn" \
+              --output tsv
+          )
+
+          echo "fqdn=${FQDN}" \
+            >> "${GITHUB_OUTPUT}"
+
+          echo "Application FQDN resolved."
+
+
+      # ---------------------------------------------------------------
+      # Deployment health check
+      # ---------------------------------------------------------------
 
       - name: Health check
+        shell: bash
         run: |
-          echo "Checking https://${{ steps.fqdn.outputs.fqdn }}/health"
 
-          for i in {1..12}; do
-            if curl \
-              --fail \
-              --silent \
-              --show-error \
-              "https://${{ steps.fqdn.outputs.fqdn }}/health"; then
+          FQDN="${{ steps.app-url.outputs.fqdn }}"
 
-              echo ""
-              echo "Health check succeeded."
-              exit 0
+          URL="https://${FQDN}/health"
+
+          echo "Waiting for deployment health endpoint..."
+
+          success=false
+
+          for attempt in $(seq 1 20)
+          do
+
+            echo \
+              "Health check attempt ${attempt}/20"
+
+            status=$(
+              curl \
+                --silent \
+                --show-error \
+                --output /tmp/health.json \
+                --write-out "%{http_code}" \
+                "${URL}" \
+                || true
+            )
+
+            echo \
+              "HTTP status: ${status}"
+
+            if [ "${status}" = "200" ]
+            then
+
+              echo \
+                "Deployment health check passed."
+
+              cat /tmp/health.json
+
+              success=true
+
+              break
+
             fi
 
-            echo "Attempt $i failed. Waiting 10 seconds..."
-            sleep 10
+            sleep 15
+
           done
 
-          echo "Health check failed."
-          exit 1
+
+          if [ "${success}" != "true" ]
+          then
+
+            echo \
+              "Deployment health check failed."
+
+            exit 1
+
+          fi
+
+
+      # ---------------------------------------------------------------
+      # Deployment summary
+      # ---------------------------------------------------------------
+
+      - name: Deployment summary
+        shell: bash
+        run: |
+
+          echo "## Healthcare RAG Deployment" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "**Commit:** ${GITHUB_SHA}" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "**Image:**" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "\`${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${GITHUB_SHA}\`" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "**Application:**" \
+            >> "${GITHUB_STEP_SUMMARY}"
+
+          echo \
+            "https://${{ steps.app-url.outputs.fqdn }}" \
+            >> "${GITHUB_STEP_SUMMARY}"

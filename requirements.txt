@@ -28,3 +28,4 @@ opentelemetry-instrumentation-fastapi
 langgraph
 langgraph-checkpoint-postgres
 psycopg[binary,pool]
+langgraph-checkpoint-sqlite

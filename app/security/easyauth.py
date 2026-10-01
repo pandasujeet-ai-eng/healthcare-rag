@@ -1,16 +1,64 @@
 import base64
 import json
+import os
 from typing import Any
 
+from dotenv import load_dotenv
 from fastapi import Header, HTTPException
 
 
+load_dotenv()
+
+
 REVIEWER_ROLE = "HealthcareRAG.Reviewer"
+
+AUTH_MODE = os.getenv(
+    "AUTH_MODE",
+    "azure",
+).strip().lower()
+
+DEV_REVIEWER = (
+    os.getenv(
+        "DEV_REVIEWER",
+        "false",
+    ).strip().lower()
+    == "true"
+)
+
+
+def build_dev_principal() -> dict[str, Any]:
+
+    roles = []
+
+    if DEV_REVIEWER:
+        roles.append(
+            REVIEWER_ROLE
+        )
+
+    return {
+        "auth_typ": "dev",
+        "name_typ": "name",
+        "role_typ": "roles",
+        "claims": [
+            {
+                "typ": "name",
+                "val": "local-developer",
+            },
+            *[
+                {
+                    "typ": "roles",
+                    "val": role,
+                }
+                for role in roles
+            ],
+        ],
+    }
 
 
 def decode_client_principal(
     encoded_principal: str,
 ) -> dict[str, Any]:
+
     try:
         decoded_bytes = base64.b64decode(
             encoded_principal
@@ -27,7 +75,9 @@ def decode_client_principal(
     except Exception as exc:
         raise HTTPException(
             status_code=401,
-            detail="Invalid authentication principal.",
+            detail=(
+                "Invalid authentication principal."
+            ),
         ) from exc
 
 
@@ -35,6 +85,7 @@ def get_claim_values(
     principal: dict[str, Any],
     claim_types: set[str],
 ) -> list[str]:
+
     values: list[str] = []
 
     for claim in principal.get(
@@ -57,40 +108,12 @@ def get_claim_values(
             and claim_value is not None
         ):
             values.append(
-                str(claim_value)
+                str(
+                    claim_value
+                )
             )
 
     return values
-
-
-def require_authenticated_user(
-    x_ms_client_principal: str | None = Header(
-        default=None,
-        alias="X-MS-CLIENT-PRINCIPAL",
-    ),
-) -> dict[str, Any]:
-
-    if not x_ms_client_principal:
-        raise HTTPException(
-            status_code=401,
-            detail="Authentication required.",
-        )
-
-    principal = decode_client_principal(
-        x_ms_client_principal
-    )
-
-    auth_type = principal.get(
-        "auth_typ"
-    )
-
-    if not auth_type:
-        raise HTTPException(
-            status_code=401,
-            detail="Authentication required.",
-        )
-
-    return principal
 
 
 def extract_roles(
@@ -107,7 +130,10 @@ def extract_roles(
     role_claims = {
         "roles",
         role_claim_type,
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+        (
+            "http://schemas.microsoft.com/"
+            "ws/2008/06/identity/claims/role"
+        ),
     }
 
     return set(
@@ -118,6 +144,46 @@ def extract_roles(
     )
 
 
+def require_authenticated_user(
+    x_ms_client_principal: str | None = Header(
+        default=None,
+        alias="X-MS-CLIENT-PRINCIPAL",
+    ),
+) -> dict[str, Any]:
+
+    if AUTH_MODE == "dev":
+
+        return build_dev_principal()
+
+    if not x_ms_client_principal:
+
+        raise HTTPException(
+            status_code=401,
+            detail=(
+                "Authentication required."
+            ),
+        )
+
+    principal = decode_client_principal(
+        x_ms_client_principal
+    )
+
+    auth_type = principal.get(
+        "auth_typ"
+    )
+
+    if not auth_type:
+
+        raise HTTPException(
+            status_code=401,
+            detail=(
+                "Authentication required."
+            ),
+        )
+
+    return principal
+
+
 def require_reviewer(
     x_ms_client_principal: str | None = Header(
         default=None,
@@ -125,8 +191,10 @@ def require_reviewer(
     ),
 ) -> dict[str, Any]:
 
-    principal = require_authenticated_user(
-        x_ms_client_principal
+    principal = (
+        require_authenticated_user(
+            x_ms_client_principal
+        )
     )
 
     roles = extract_roles(
@@ -134,10 +202,12 @@ def require_reviewer(
     )
 
     if REVIEWER_ROLE not in roles:
+
         raise HTTPException(
             status_code=403,
             detail=(
-                "HealthcareRAG.Reviewer role required."
+                "HealthcareRAG.Reviewer "
+                "role required."
             ),
         )
 

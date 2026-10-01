@@ -19,8 +19,8 @@ from app.models.graph_response import (
     GraphCitation,
     GraphRunResponse,
 )
-from app.persistence.postgres_checkpointer import (
-    get_postgres_checkpointer,
+from app.persistence.checkpointer_factory import (
+    get_checkpointer,
 )
 from app.security.easyauth import (
     require_authenticated_user,
@@ -53,12 +53,24 @@ def serialize_citations(
 
     return [
         GraphCitation(
-            document_id=item.get("document_id"),
-            chunk_id=item.get("chunk_id"),
-            title=item.get("title"),
-            version=item.get("version"),
-            section=item.get("section"),
-            page=item.get("page"),
+            document_id=item.get(
+                "document_id"
+            ),
+            chunk_id=item.get(
+                "chunk_id"
+            ),
+            title=item.get(
+                "title"
+            ),
+            version=item.get(
+                "version"
+            ),
+            section=item.get(
+                "section"
+            ),
+            page=item.get(
+                "page"
+            ),
         )
         for item in citations
     ]
@@ -96,7 +108,9 @@ def extract_interrupt_payload(
             first_interrupt,
         )
 
-    return str(first_interrupt)
+    return str(
+        first_interrupt
+    )
 
 
 @router.post(
@@ -119,10 +133,13 @@ def start_graph_run(
     )
 
     try:
-        with get_postgres_checkpointer() as checkpointer:
 
-            graph = build_healthcare_rag_hitl_graph(
-                checkpointer
+        with get_checkpointer() as checkpointer:
+
+            graph = (
+                build_healthcare_rag_hitl_graph(
+                    checkpointer
+                )
             )
 
             result = graph.invoke(
@@ -133,11 +150,14 @@ def start_graph_run(
                 config=config,
             )
 
-        review_payload = extract_interrupt_payload(
-            result
+        review_payload = (
+            extract_interrupt_payload(
+                result
+            )
         )
 
         if review_payload is not None:
+
             return GraphRunResponse(
                 thread_id=thread_id,
                 status="waiting_for_review",
@@ -150,7 +170,9 @@ def start_graph_run(
         return GraphRunResponse(
             thread_id=thread_id,
             status="completed",
-            answer=result.get("answer"),
+            answer=result.get(
+                "answer"
+            ),
             citations=serialize_citations(
                 result.get(
                     "citations",
@@ -164,6 +186,7 @@ def start_graph_run(
         )
 
     except Exception as exc:
+
         raise HTTPException(
             status_code=500,
             detail={
@@ -189,10 +212,13 @@ def get_graph_state(
     )
 
     try:
-        with get_postgres_checkpointer() as checkpointer:
 
-            graph = build_healthcare_rag_hitl_graph(
-                checkpointer
+        with get_checkpointer() as checkpointer:
+
+            graph = (
+                build_healthcare_rag_hitl_graph(
+                    checkpointer
+                )
             )
 
             snapshot = graph.get_state(
@@ -200,6 +226,7 @@ def get_graph_state(
             )
 
         if not snapshot.values:
+
             raise HTTPException(
                 status_code=404,
                 detail={
@@ -211,7 +238,9 @@ def get_graph_state(
         return {
             "thread_id": thread_id,
             "values": snapshot.values,
-            "next": list(snapshot.next),
+            "next": list(
+                snapshot.next
+            ),
             "created_at": getattr(
                 snapshot,
                 "created_at",
@@ -223,6 +252,7 @@ def get_graph_state(
         raise
 
     except Exception as exc:
+
         raise HTTPException(
             status_code=500,
             detail={
@@ -250,10 +280,13 @@ def review_graph_run(
     )
 
     try:
-        with get_postgres_checkpointer() as checkpointer:
 
-            graph = build_healthcare_rag_hitl_graph(
-                checkpointer
+        with get_checkpointer() as checkpointer:
+
+            graph = (
+                build_healthcare_rag_hitl_graph(
+                    checkpointer
+                )
             )
 
             snapshot = graph.get_state(
@@ -261,6 +294,7 @@ def review_graph_run(
             )
 
             if not snapshot.values:
+
                 raise HTTPException(
                     status_code=404,
                     detail={
@@ -272,17 +306,22 @@ def review_graph_run(
             result = graph.invoke(
                 Command(
                     resume={
-                        "approved": request.approved
+                        "approved": (
+                            request.approved
+                        )
                     }
                 ),
                 config=config,
             )
 
-        review_payload = extract_interrupt_payload(
-            result
+        review_payload = (
+            extract_interrupt_payload(
+                result
+            )
         )
 
         if review_payload is not None:
+
             return GraphRunResponse(
                 thread_id=thread_id,
                 status="waiting_for_review",
@@ -303,7 +342,9 @@ def review_graph_run(
         return GraphRunResponse(
             thread_id=thread_id,
             status=status,
-            answer=result.get("answer"),
+            answer=result.get(
+                "answer"
+            ),
             citations=serialize_citations(
                 result.get(
                     "citations",
@@ -320,6 +361,7 @@ def review_graph_run(
         raise
 
     except Exception as exc:
+
         raise HTTPException(
             status_code=500,
             detail={
