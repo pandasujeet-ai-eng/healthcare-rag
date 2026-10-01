@@ -1,37 +1,48 @@
+from __future__ import annotations
+
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import (
+    APIRouter,
+    Depends,
+)
 
 from app.security.easyauth import (
+    REVIEWER_ROLE,
+    extract_actor_id,
+    extract_actor_name,
     extract_roles,
-    get_claim_values,
     require_authenticated_user,
 )
 
 
 router = APIRouter(
     prefix="/api/v1",
-    tags=["Security"],
+    tags=[
+        "Security"
+    ],
 )
 
 
-@router.get("/whoami")
+@router.get(
+    "/whoami"
+)
 def whoami(
     principal: dict[str, Any] = Depends(
         require_authenticated_user
     ),
 ) -> dict:
 
-    name_claims = {
-        "name",
-        "preferred_username",
-        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
-    }
+    actor_id = (
+        extract_actor_id(
+            principal
+        )
+    )
 
-    names = get_claim_values(
-        principal,
-        name_claims,
+    actor_name = (
+        extract_actor_name(
+            principal
+        )
     )
 
     roles = sorted(
@@ -42,17 +53,16 @@ def whoami(
 
     return {
         "authenticated": True,
-        "identity_provider": principal.get(
-            "auth_typ"
+        "identity_provider": (
+            principal.get(
+                "auth_typ"
+            )
         ),
-        "user": (
-            names[0]
-            if names
-            else None
-        ),
+        "actor_id": actor_id,
+        "user": actor_name,
         "roles": roles,
         "is_reviewer": (
-            "HealthcareRAG.Reviewer"
+            REVIEWER_ROLE
             in roles
         ),
     }
