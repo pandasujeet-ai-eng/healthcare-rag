@@ -1,0 +1,332 @@
+/* ============================================================= */
+/* CAREGUARD V1.6A - BILINGUAL / RTL EXPERIENCE                  */
+/* ============================================================= */
+
+
+.language-switcher {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 3px;
+
+    margin-right: 8px;
+
+    padding: 3px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 22px;
+
+    background: #f7fafc;
+}
+
+
+.language-button {
+    min-width: 62px;
+
+    height: 30px;
+
+    padding:
+        0
+        10px;
+
+    border: 0;
+
+    border-radius: 17px;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    font-weight: 750;
+
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+.language-button:hover {
+    color: var(--teal);
+}
+
+
+.language-button.active {
+    background: white;
+
+    color: var(--teal);
+
+    box-shadow:
+        0 2px 8px
+        rgba(
+            20,
+            70,
+            90,
+            0.08
+        );
+}
+
+
+/* ============================================================= */
+/* ARABIC TYPOGRAPHY                                             */
+/* ============================================================= */
+
+
+html[lang="ar"] body {
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Arial,
+        sans-serif;
+}
+
+
+html[lang="ar"] .hero h1,
+html[lang="ar"] .section-header h1 {
+    letter-spacing: 0;
+}
+
+
+html[lang="ar"] .eyebrow,
+html[lang="ar"] .metric-label,
+html[lang="ar"] .case-label,
+html[lang="ar"] .provenance-field-label,
+html[lang="ar"] .evidence-excerpt-label,
+html[lang="ar"] .risk-reason-label {
+    letter-spacing: 0;
+}
+
+
+/* ============================================================= */
+/* RTL DESKTOP                                                   */
+/* ============================================================= */
+
+
+@media (
+    min-width: 901px
+) {
+
+    html[dir="rtl"] .app-shell {
+        grid-template-columns:
+            minmax(0, 1fr)
+            250px;
+    }
+
+
+    html[dir="rtl"] .sidebar {
+        left: auto;
+
+        right: 0;
+
+        direction: rtl;
+    }
+
+
+    html[dir="rtl"] .main {
+        grid-column: 1;
+    }
+
+
+    html[dir="rtl"] .navigation {
+        direction: rtl;
+    }
+
+
+    html[dir="rtl"] .nav-item {
+        text-align: right;
+    }
+
+
+    html[dir="rtl"] .nav-badge {
+        margin-left: 0;
+
+        margin-right: auto;
+    }
+
+}
+
+
+/* ============================================================= */
+/* RTL CONTENT                                                   */
+/* ============================================================= */
+
+
+html[dir="rtl"] .main,
+html[dir="rtl"] .content {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .topbar {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .hero,
+html[dir="rtl"] .section-header,
+html[dir="rtl"] .answer-card,
+html[dir="rtl"] .provenance-card,
+html[dir="rtl"] .risk-reason-card,
+html[dir="rtl"] .review-case-panel {
+    text-align: right;
+}
+
+
+html[dir="rtl"] .question-card textarea {
+    direction: rtl;
+
+    text-align: right;
+}
+
+
+html[dir="rtl"] .question-footer {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .example-row {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .review-banner {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .review-actions {
+    margin-left: 0;
+
+    margin-right: auto;
+}
+
+
+html[dir="rtl"] .review-toolbar {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .review-filter-group {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .review-queue-top,
+html[dir="rtl"] .review-queue-meta,
+html[dir="rtl"] .case-panel-header,
+html[dir="rtl"] .section-heading,
+html[dir="rtl"] .provenance-item-header {
+    direction: rtl;
+}
+
+
+html[dir="rtl"] .case-actions {
+    justify-content: flex-start;
+}
+
+
+html[dir="rtl"] .evidence-excerpt {
+    border-left: 0;
+
+    border-right:
+        4px solid
+        var(--teal);
+}
+
+
+html[dir="rtl"] .timeline-item {
+    grid-template-columns:
+        1fr
+        28px;
+}
+
+
+html[dir="rtl"] .timeline-item .timeline-dot {
+    grid-column: 2;
+
+    grid-row: 1;
+}
+
+
+html[dir="rtl"] .timeline-item > div:not(.timeline-dot) {
+    grid-column: 1;
+
+    grid-row: 1;
+
+    text-align: right;
+}
+
+
+html[dir="rtl"] .timeline-item::before {
+    left: auto;
+
+    right: 8px;
+}
+
+
+/* ============================================================= */
+/* KEEP GOVERNANCE IDENTIFIERS LTR                               */
+/* ============================================================= */
+
+
+html[dir="rtl"] .mono,
+html[dir="rtl"] .thread-reference,
+html[dir="rtl"] .provenance-field-value {
+    direction: ltr;
+
+    unicode-bidi: isolate;
+
+    text-align: left;
+}
+
+
+/* ============================================================= */
+/* MOBILE                                                        */
+/* ============================================================= */
+
+
+@media (
+    max-width: 900px
+) {
+
+    html[dir="rtl"] .sidebar {
+        direction: rtl;
+    }
+
+
+    html[dir="rtl"] .navigation {
+        direction: rtl;
+    }
+
+
+    html[dir="rtl"] .main {
+        grid-column: 1;
+    }
+
+}
+
+
+@media (
+    max-width: 620px
+) {
+
+    .language-switcher {
+        margin-right: 0;
+    }
+
+
+    .language-button {
+        min-width: 52px;
+
+        padding:
+            0
+            7px;
+    }
+
+}

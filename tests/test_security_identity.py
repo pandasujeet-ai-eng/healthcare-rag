@@ -6,6 +6,8 @@ import json
 import pytest
 from fastapi import HTTPException
 
+import app.security.easyauth as easyauth
+
 from app.security.easyauth import (
     REVIEWER_ROLE,
     build_dev_principal,
@@ -17,9 +19,7 @@ from app.security.easyauth import (
 
 def test_dev_principal_has_stable_actor_id():
 
-    principal = (
-        build_dev_principal()
-    )
+    principal = build_dev_principal()
 
     actor_id = extract_actor_id(
         principal
@@ -31,11 +31,19 @@ def test_dev_principal_has_stable_actor_id():
     )
 
 
-def test_dev_reviewer_role_present_when_enabled():
+def test_dev_reviewer_role_present_when_enabled(
+    monkeypatch,
+):
 
-    principal = (
-        build_dev_principal()
+    # Make this test independent of the developer's
+    # current PowerShell environment.
+    monkeypatch.setattr(
+        easyauth,
+        "DEV_REVIEWER",
+        True,
     )
+
+    principal = build_dev_principal()
 
     roles = extract_roles(
         principal
@@ -64,9 +72,7 @@ def test_decode_azure_style_principal():
             },
             {
                 "typ": "roles",
-                "val": (
-                    REVIEWER_ROLE
-                ),
+                "val": REVIEWER_ROLE,
             },
         ],
     }
@@ -84,10 +90,8 @@ def test_decode_azure_style_principal():
         )
     )
 
-    decoded = (
-        decode_client_principal(
-            encoded
-        )
+    decoded = decode_client_principal(
+        encoded
     )
 
     assert (
