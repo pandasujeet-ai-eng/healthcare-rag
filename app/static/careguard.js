@@ -3514,7 +3514,7 @@ function renderReviewList(
 
             const risk =
 
-                review\.risk_level
+                review.risk_level
 
                 || "UNKNOWN";
 
@@ -3524,7 +3524,7 @@ function renderReviewList(
 
             const status =
 
-                review\.status
+                review.status
 
                 || "pending";
 
@@ -3562,7 +3562,7 @@ function renderReviewList(
 
                 <div class="review-queue-question">
 
-                    ${escapeHtml(review\.question)}
+                    ${escapeHtml(review.question)}
 
                 </div>
 
@@ -3580,7 +3580,7 @@ function renderReviewList(
 
                         ${escapeHtml(
 
-                            review\.evidence_strength
+                            review.evidence_strength
 
                             || "—"
 
@@ -3594,7 +3594,7 @@ function renderReviewList(
 
                         ${formatDate(
 
-                            review\.created_at
+                            review.created_at
 
                         )}
 
@@ -3698,7 +3698,7 @@ async function openReviewCase(
 
         "case-status",
 
-        review\.status
+        review.status
 
         || "—",
 
@@ -3712,7 +3712,7 @@ async function openReviewCase(
 
         "case-risk",
 
-        review\.risk_level
+        review.risk_level
 
         || "—",
 
@@ -3726,7 +3726,7 @@ async function openReviewCase(
 
         "case-evidence",
 
-        review\.evidence_strength
+        review.evidence_strength
 
         || "—",
 
@@ -3740,7 +3740,7 @@ async function openReviewCase(
 
         "case-requested-by",
 
-        review\.requested_by
+        review.requested_by
 
         || "—",
 
@@ -3754,7 +3754,7 @@ async function openReviewCase(
 
         "case-question",
 
-        review\.question
+        review.question
 
         || "—",
 
@@ -3768,7 +3768,7 @@ async function openReviewCase(
 
         "case-reason",
 
-        review\.risk_reason
+        review.risk_reason
 
         || "—",
 
@@ -3782,7 +3782,7 @@ async function openReviewCase(
 
         "case-thread",
 
-        review\.thread_id,
+        review.thread_id,
 
     );
 
@@ -3796,7 +3796,7 @@ async function openReviewCase(
 
         formatDate(
 
-            review\.created_at
+            review.created_at
 
         ),
 
@@ -3808,7 +3808,7 @@ async function openReviewCase(
 
     if (
 
-        review\.reviewer_id
+        review.reviewer_id
 
     ) {
 
@@ -3828,7 +3828,7 @@ async function openReviewCase(
 
             "case-reviewer",
 
-            review\.reviewer_id,
+            review.reviewer_id,
 
         );
 
@@ -3854,7 +3854,7 @@ async function openReviewCase(
 
     if (
 
-        review\.status
+        review.status
 
         === "pending"
 
@@ -3890,7 +3890,7 @@ async function openReviewCase(
 
     await loadCaseProvenance(
 
-        review\.thread_id
+        review.thread_id
 
     );
 
