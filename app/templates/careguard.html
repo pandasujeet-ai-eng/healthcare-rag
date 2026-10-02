@@ -1,1252 +1,2506 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
+
 
 <head>
 
+
+
     <meta charset="UTF-8">
 
+
+
     <meta
+
         name="viewport"
+
         content="width=device-width, initial-scale=1.0"
+
     >
+
+
 
     <title>
+
         CareGuard AI
+
     </title>
 
+
+
     <link
+
         rel="stylesheet"
+
         href="/static/careguard.css"
+
     >
+
+
 
 </head>
 
 
+
+
+
 <body>
+
+
 
 <div class="app-shell">
 
 
+
+
+
     <aside class="sidebar">
+
+
 
         <div class="brand">
 
+
+
             <div class="brand-mark">
+
                 CG
+
             </div>
+
+
 
             <div>
 
+
+
                 <div class="brand-name">
+
                     CareGuard AI
+
                 </div>
 
+
+
                 <div class="brand-tagline">
+
                     Trusted answers.<br>
+
                     Governed decisions.
+
                 </div>
+
+
 
             </div>
 
+
+
         </div>
+
+
+
 
 
         <nav class="navigation">
 
+
+
             <button
+
                 class="nav-item active"
+
                 data-section="ask"
+
             >
+
                 ✦ Ask CareGuard
+
             </button>
 
 
+
+
+
             <button
+
                 class="nav-item"
+
                 data-section="reviews"
+
             >
+
+
 
                 ✓ Reviews
 
+
+
                 <span
+
                     id="review-count"
+
                     class="nav-badge hidden"
+
                 >
+
                     0
+
                 </span>
 
+
+
             </button>
 
 
+
+
+
             <button
+
                 class="nav-item"
+
                 data-section="audit"
+
             >
+
                 ◫ Audit Trail
+
             </button>
+
+
+
 
 
             <button
+
                 class="nav-item"
+
                 data-section="analytics"
+
             >
+
                 ◒ Analytics
+
             </button>
+
+
 
         </nav>
 
 
+
+
+
         <div class="sidebar-footer">
+
+
 
             <div class="environment">
 
+
+
                 <span class="status-dot"></span>
+
+
 
                 Azure Connected
 
+
+
             </div>
 
+
+
             <div class="footer-version">
-                Hackathon Product V1.5
+
+                Hackathon Product V1.7.2
+
             </div>
+
+
 
         </div>
 
+
+
     </aside>
+
+
+
 
 
     <main class="main">
 
 
+
+
+
         <header class="topbar">
+
+
 
             <div>
 
-                <div
-                    id="page-title"
-                    class="page-title"
-                >
-                    Ask CareGuard
-                </div>
+
 
                 <div
-                    id="page-subtitle"
-                    class="page-subtitle"
+
+                    id="page-title"
+
+                    class="page-title"
+
                 >
-                    Governed AI over approved hospital knowledge.
+
+                    Ask CareGuard
+
                 </div>
+
+
+
+                <div
+
+                    id="page-subtitle"
+
+                    class="page-subtitle"
+
+                >
+
+                    Governed AI over approved hospital knowledge.
+
+                </div>
+
+
 
             </div>
+
+
+
 
 
             <div class="user-area">
 
+
+
                 <div
+
                     id="reviewer-chip"
+
                     class="role-chip hidden"
+
                 >
+
                     Reviewer
+
                 </div>
+
+
+
 
 
                 <div class="user-avatar">
 
+
+
                     <span id="avatar-text">
+
                         U
+
                     </span>
 
+
+
                 </div>
+
+
+
 
 
                 <div class="user-info">
 
-                    <div
-                        id="user-name"
-                        class="user-name"
-                    >
-                        Loading...
-                    </div>
+
 
                     <div
-                        id="user-role"
-                        class="user-role"
+
+                        id="user-name"
+
+                        class="user-name"
+
                     >
-                        Authenticated user
+
+                        Loading...
+
                     </div>
+
+
+
+                    <div
+
+                        id="user-role"
+
+                        class="user-role"
+
+                    >
+
+                        Authenticated user
+
+                    </div>
+
+
 
                 </div>
 
+
+
             </div>
 
+
+
         </header>
+
+
+
 
 
         <div class="content">
 
 
+
+
+
             <!-- ASK -->
 
+
+
             <section
+
                 id="section-ask"
+
                 class="section active"
+
             >
+
+
+
 
 
                 <div class="hero">
 
+
+
                     <div class="eyebrow">
+
                         GOVERNED HEALTHCARE AI
+
                     </div>
 
+
+
                     <h1>
-                        How can CareGuard help?
+
+                        Governed decisions before AI responses
+
                     </h1>
 
+
+
                     <p>
-                        Ask about approved hospital policies,
-                        procedures and clinical operations.
-                        CareGuard evaluates evidence, provenance
-                        and governance risk before responding.
+
+                        CareGuard evaluates approved evidence,
+
+                        clinical risk and human oversight before
+
+                        deciding whether to answer, safely refuse,
+
+                        or pause the workflow for human review.
+
                     </p>
 
+
+
                 </div>
+
+
+
 
 
                 <div class="question-card">
 
+
+
                     <textarea
+
                         id="question-input"
+
                         maxlength="4000"
+
                         placeholder="Example: The policy says metformin must be stopped 48 hours before surgery, correct?"
+
                     ></textarea>
+
+
+
 
 
                     <div class="question-footer">
 
+
+
                         <div class="knowledge-chip">
+
+
 
                             <span class="status-dot"></span>
 
+
+
                             Approved knowledge only
+
+
 
                         </div>
 
 
+
+
+
                         <button
+
                             id="ask-button"
+
                             class="primary-button"
+
                         >
 
+
+
                             <span id="ask-button-text">
+
                                 Ask CareGuard
+
                             </span>
 
+
+
                             <span
+
                                 id="ask-spinner"
+
                                 class="spinner hidden"
+
                             ></span>
+
+
 
                         </button>
 
+
+
                     </div>
 
+
+
                 </div>
+
+
+
 
 
                 <div class="example-row">
 
+
+
                     <span>Demo:</span>
 
+
+
                     <button
+
                         class="example-question"
+
                         data-question="When should metformin be stopped before surgery?"
+
                     >
+
                         Normal policy question
+
                     </button>
 
+
+
                     <button
+
                         class="example-question"
+
                         data-question="The policy says metformin must be stopped 48 hours before surgery, correct?"
+
                     >
+
                         Evidence conflict
+
                     </button>
 
+
+
                     <button
+
                         class="example-question"
+
                         data-question="What is the hospital treatment protocol for malaria?"
+
                     >
+
                         Unsupported
+
                     </button>
 
+
+
                     <button
+
                         class="example-question"
+
                         data-question="Double the dose of the patient's medication."
+
                     >
+
                         Critical request
+
                     </button>
+
+
 
                 </div>
 
 
+
+
+
                 <div
+
                     id="result-area"
+
                     class="result-area hidden"
+
                 >
+
+
+
 
 
                     <div class="intelligence-title">
 
+
+
                         <div class="eyebrow">
+
                             CAREGUARD INTELLIGENCE
+
                         </div>
 
+
+
                         <h2>
+
                             Governance Assessment
+
                         </h2>
 
+
+
                     </div>
+
+
+
 
 
                     <div class="intelligence-grid">
 
 
+
+
+
                         <div class="metric-card">
 
+
+
                             <div class="metric-label">
+
                                 Risk Level
+
                             </div>
 
+
+
                             <div
+
                                 id="risk-value"
+
                                 class="risk-value neutral"
+
                             >
+
                                 —
+
                             </div>
+
+
 
                         </div>
 
 
+
+
+
                         <div class="metric-card">
 
+
+
                             <div class="metric-label">
+
                                 Governance
+
                             </div>
 
+
+
                             <div
+
                                 id="decision-value"
+
                                 class="metric-value"
+
                             >
+
                                 —
+
                             </div>
+
+
 
                         </div>
 
 
+
+
+
                         <div class="metric-card">
 
+
+
                             <div class="metric-label">
+
                                 Evidence Strength
+
                             </div>
+
+
 
                             <div
+
                                 id="evidence-value"
+
                                 class="metric-value"
+
                             >
+
                                 —
+
                             </div>
 
+
+
                         </div>
+
+
+
 
 
                         <div class="metric-card">
 
+
+
                             <div class="metric-label">
+
                                 Human Oversight
+
                             </div>
+
+
 
                             <div
+
                                 id="oversight-value"
+
                                 class="metric-value"
+
                             >
+
                                 —
+
                             </div>
 
+
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div
+
                         id="risk-reason-card"
+
                         class="risk-reason-card hidden"
+
                     >
+
+
 
                         <div class="risk-reason-label">
+
                             Why CareGuard assigned this risk
+
                         </div>
 
+
+
                         <div
+
                             id="risk-reason"
+
                             class="risk-reason"
+
                         >
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div
+
                         id="review-banner"
+
                         class="review-banner hidden"
+
                     >
 
+
+
                         <div class="review-icon">
+
                             !
+
                         </div>
+
+
+
 
 
                         <div class="review-content">
 
+
+
                             <div class="review-title">
+
                                 Human Review Required
+
                             </div>
 
+
+
                             <div
+
                                 id="review-message"
+
                                 class="review-message"
+
                             >
+
                             </div>
+
+
 
                             <div class="thread-reference">
 
+
+
                                 Thread:
 
+
+
                                 <span id="review-thread-id">
+
                                     —
+
                                 </span>
+
+
 
                             </div>
 
+
+
                         </div>
+
+
+
 
 
                         <div
+
                             id="review-actions"
+
                             class="review-actions hidden"
+
                         >
 
-                            <button
-                                id="reject-button"
-                                class="secondary-danger-button"
-                            >
-                                Reject
-                            </button>
+
 
                             <button
-                                id="approve-button"
-                                class="primary-button"
+
+                                id="reject-button"
+
+                                class="secondary-danger-button"
+
                             >
-                                Approve
+
+                                Reject
+
                             </button>
+
+
+
+                            <button
+
+                                id="approve-button"
+
+                                class="primary-button"
+
+                            >
+
+                                Approve
+
+                            </button>
+
+
 
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div
+
                         id="answer-card"
+
                         class="answer-card hidden"
+
                     >
+
+
 
                         <div class="section-heading">
 
+
+
                             <div>
 
+
+
                                 <div class="eyebrow">
+
                                     CAREGUARD RESPONSE
+
                                 </div>
 
-                                <h2>
+
+
+                                <h2 id="response-heading">
+
                                     Grounded Answer
+
                                 </h2>
 
+
+
                             </div>
 
 
-                            <div class="grounded-chip">
+
+
+
+                            <div
+                                id="response-chip"
+                                class="grounded-chip"
+                            >
+
                                 Evidence grounded
+
                             </div>
+
+
 
                         </div>
+
+
+
 
 
                         <div
+
                             id="answer-text"
+
                             class="answer-text"
+
                         >
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <!-- V1.5 PROVENANCE -->
 
+
+
                     <div
+
                         id="provenance-card"
+
                         class="provenance-card hidden"
+
                     >
+
+
 
                         <div class="section-heading">
 
+
+
                             <div>
 
+
+
                                 <div class="eyebrow">
+
                                     POLICY PROVENANCE
+
                                 </div>
 
+
+
                                 <h2>
+
                                     Evidence Viewer
+
                                 </h2>
 
+
+
                             </div>
+
+
+
 
 
                             <div
+
                                 id="provenance-overall"
+
                                 class="provenance-chip"
+
                             >
+
                                 —
+
                             </div>
 
+
+
                         </div>
+
+
+
 
 
                         <div class="provenance-summary-grid">
 
+
+
                             <div class="provenance-summary">
 
+
+
                                 <div
+
                                     id="provenance-source-count"
+
                                     class="provenance-summary-number"
+
                                 >
+
                                     0
+
                                 </div>
 
+
+
                                 <div class="provenance-summary-label">
+
                                     Sources
+
                                 </div>
+
+
 
                             </div>
 
 
+
+
+
                             <div class="provenance-summary">
 
+
+
                                 <div
+
                                     id="provenance-traceable-count"
+
                                     class="provenance-summary-number"
+
                                 >
+
                                     0
+
                                 </div>
+
+
 
                                 <div class="provenance-summary-label">
+
                                     Fully Traceable
+
                                 </div>
 
+
+
                             </div>
+
+
+
 
 
                             <div class="provenance-summary">
 
+
+
                                 <div
+
                                     id="provenance-policy-count"
+
                                     class="provenance-summary-number"
+
                                 >
+
                                     0
+
                                 </div>
+
+
 
                                 <div class="provenance-summary-label">
+
                                     Policies
+
                                 </div>
 
+
+
                             </div>
+
+
 
                         </div>
+
+
+
 
 
                         <div
+
                             id="provenance-list"
+
                             class="provenance-list"
+
                         >
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div
+
                         id="error-card"
+
                         class="error-card hidden"
+
                     >
 
+
+
                         <strong>
+
                             CareGuard could not complete the request.
+
                         </strong>
 
+
+
                         <div id="error-message">
+
                         </div>
+
+
 
                     </div>
 
+
+
                 </div>
 
+
+
             </section>
+
+
+
 
 
             <!-- REVIEW COMMAND CENTER -->
 
+
+
             <section
+
                 id="section-reviews"
+
                 class="section"
+
             >
+
+
 
                 <div class="section-header">
 
+
+
                     <div class="eyebrow">
+
                         HUMAN OVERSIGHT
+
                     </div>
 
+
+
                     <h1>
+
                         Reviewer Command Center
+
                     </h1>
 
+
+
                     <p>
+
                         Govern high-risk CareGuard requests,
+
                         inspect policy provenance and record
+
                         accountable decisions.
+
                     </p>
 
+
+
                 </div>
+
+
+
 
 
                 <div class="review-stats-grid">
 
+
+
                     <div class="review-stat-card">
 
+
+
                         <div
+
                             id="review-stat-pending"
+
                             class="review-stat-number amber"
+
                         >
+
                             0
+
                         </div>
 
+
+
                         <div class="review-stat-label">
+
                             Pending
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="review-stat-card">
 
+
+
                         <div
+
                             id="review-stat-approved"
+
                             class="review-stat-number green"
+
                         >
+
                             0
+
                         </div>
 
+
+
                         <div class="review-stat-label">
+
                             Approved
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="review-stat-card">
 
+
+
                         <div
+
                             id="review-stat-rejected"
+
                             class="review-stat-number red"
+
                         >
+
                             0
+
                         </div>
+
+
 
                         <div class="review-stat-label">
+
                             Rejected
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div class="review-stat-card">
 
+
+
                         <div
+
                             id="review-stat-total"
+
                             class="review-stat-number"
+
                         >
+
                             0
+
                         </div>
+
+
 
                         <div class="review-stat-label">
+
                             Total Reviews
+
                         </div>
 
+
+
                     </div>
+
+
 
                 </div>
+
+
+
 
 
                 <div class="review-toolbar">
 
+
+
                     <div class="review-filter-group">
 
+
+
                         <button
+
                             class="review-filter active"
+
                             data-review-filter="pending"
+
                         >
+
                             Pending
+
                         </button>
 
+
+
                         <button
+
                             class="review-filter"
+
                             data-review-filter="approved"
+
                         >
+
                             Approved
+
                         </button>
 
+
+
                         <button
+
                             class="review-filter"
+
                             data-review-filter="rejected"
+
                         >
+
                             Rejected
+
                         </button>
 
+
+
                         <button
+
                             class="review-filter"
+
                             data-review-filter="all"
+
                         >
+
                             All
+
                         </button>
+
+
 
                     </div>
+
+
+
 
 
                     <button
+
                         id="refresh-reviews-button"
+
                         class="outline-button"
+
                     >
+
                         ↻ Refresh
+
                     </button>
 
+
+
                 </div>
 
 
+
+
+
                 <div
+
                     id="review-list"
+
                     class="review-list"
+
                 >
+
                 </div>
 
 
+
+
+
                 <div
+
                     id="review-empty"
+
                     class="empty-state hidden"
+
                 >
+
+
 
                     <div class="empty-icon">
+
                         ✓
+
                     </div>
 
+
+
                     <h3>
+
                         No review cases found
+
                     </h3>
 
+
+
                     <p>
+
                         New escalated cases will appear here.
+
                     </p>
+
+
 
                 </div>
 
 
+
+
+
                 <div
+
                     id="review-case-panel"
+
                     class="review-case-panel hidden"
+
                 >
+
+
 
                     <div class="case-panel-header">
 
+
+
                         <div>
 
+
+
                             <div class="eyebrow">
+
                                 REVIEW CASE
+
                             </div>
 
+
+
                             <h2>
+
                                 Case Detail
+
                             </h2>
+
+
 
                         </div>
 
 
+
+
+
                         <button
+
                             id="close-review-case"
+
                             class="outline-button"
+
                         >
+
                             Close
+
                         </button>
 
+
+
                     </div>
+
+
+
 
 
                     <div class="case-meta-grid">
 
+
+
                         <div class="case-meta">
 
+
+
                             <div class="case-label">
+
                                 Status
+
                             </div>
 
+
+
                             <div
+
                                 id="case-status"
+
                                 class="case-value"
+
                             >
+
                                 —
+
                             </div>
+
+
 
                         </div>
 
 
+
+
+
                         <div class="case-meta">
 
+
+
                             <div class="case-label">
+
                                 Risk
+
                             </div>
 
+
+
                             <div
+
                                 id="case-risk"
+
                                 class="case-value"
+
                             >
+
                                 —
+
                             </div>
+
+
 
                         </div>
 
 
+
+
+
                         <div class="case-meta">
 
+
+
                             <div class="case-label">
+
                                 Evidence
+
                             </div>
+
+
 
                             <div
+
                                 id="case-evidence"
+
                                 class="case-value"
+
                             >
+
                                 —
+
                             </div>
 
+
+
                         </div>
+
+
+
 
 
                         <div class="case-meta">
 
+
+
                             <div class="case-label">
+
                                 Requested By
+
                             </div>
+
+
 
                             <div
+
                                 id="case-requested-by"
+
                                 class="case-value mono"
+
                             >
+
                                 —
+
                             </div>
 
+
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="case-section">
 
+
+
                         <div class="case-label">
+
                             Question
+
                         </div>
 
+
+
                         <div
+
                             id="case-question"
+
                             class="case-question"
+
                         >
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="case-section">
 
+
+
                         <div class="case-label">
+
                             Risk Reason
+
                         </div>
 
+
+
                         <div
+
                             id="case-reason"
+
                             class="case-body"
+
                         >
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="case-section">
 
+
+
                         <div class="case-label">
+
                             Thread ID
+
                         </div>
+
+
 
                         <div
+
                             id="case-thread"
+
                             class="case-body mono"
+
                         >
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div class="case-section">
 
+
+
                         <div class="case-label">
+
                             Created
+
                         </div>
+
+
 
                         <div
+
                             id="case-created"
+
                             class="case-body"
+
                         >
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div
+
                         id="case-reviewer-section"
+
                         class="case-section hidden"
+
                     >
 
+
+
                         <div class="case-label">
+
                             Reviewer
+
                         </div>
+
+
 
                         <div
+
                             id="case-reviewer"
+
                             class="case-body mono"
+
                         >
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <!-- REVIEW CASE EVIDENCE -->
 
+
+
                     <div
+
                         id="case-provenance-section"
+
                         class="case-section hidden"
+
                     >
+
+
 
                         <div class="case-label">
+
                             Policy Provenance
+
                         </div>
+
+
 
                         <div
+
                             id="case-provenance-list"
+
                             class="case-provenance-list"
+
                         >
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div
+
                         id="case-actions"
+
                         class="case-actions"
+
                     >
 
-                        <button
-                            id="case-reject-button"
-                            class="secondary-danger-button"
-                        >
-                            Reject
-                        </button>
+
 
                         <button
-                            id="case-approve-button"
-                            class="primary-button"
+
+                            id="case-reject-button"
+
+                            class="secondary-danger-button"
+
                         >
-                            Approve
+
+                            Reject
+
                         </button>
+
+
+
+                        <button
+
+                            id="case-approve-button"
+
+                            class="primary-button"
+
+                        >
+
+                            Approve
+
+                        </button>
+
+
 
                     </div>
 
+
+
                 </div>
+
+
 
             </section>
 
 
+
+
+
             <!-- AUDIT -->
 
+
+
             <section
+
                 id="section-audit"
+
                 class="section"
+
             >
+
+
 
                 <div class="section-header">
 
+
+
                     <div class="eyebrow">
+
                         GOVERNANCE
+
                     </div>
 
+
+
                     <h1>
+
                         Audit Trail
+
                     </h1>
 
+
+
                     <p>
+
                         Transparent tracking of the CareGuard
+
                         decision lifecycle.
+
                     </p>
 
+
+
                 </div>
+
+
+
 
 
                 <div class="timeline">
 
 
+
+
+
                     <div class="timeline-item complete">
 
+
+
                         <div class="timeline-dot"></div>
+
+
 
                         <div>
 
+
+
                             <strong>
+
                                 User authenticated
+
                             </strong>
+
+
 
                             <p>
+
                                 Identity verified using Microsoft Entra ID.
+
                             </p>
 
+
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div
+
                         id="audit-question"
+
                         class="timeline-item"
+
                     >
+
+
 
                         <div class="timeline-dot"></div>
 
+
+
                         <div>
 
+
+
                             <strong>
+
                                 Question submitted
+
                             </strong>
+
+
 
                             <p id="audit-question-text">
+
                                 Waiting for request.
+
                             </p>
 
+
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div
+
                         id="audit-risk"
+
                         class="timeline-item"
+
                     >
+
+
 
                         <div class="timeline-dot"></div>
 
+
+
                         <div>
 
+
+
                             <strong>
+
                                 Risk assessed
+
                             </strong>
+
+
 
                             <p id="audit-risk-text">
+
                                 Waiting for governance assessment.
+
                             </p>
 
+
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div
+
                         id="audit-decision"
+
                         class="timeline-item"
+
                     >
+
+
 
                         <div class="timeline-dot"></div>
 
+
+
                         <div>
 
+
+
                             <strong>
+
                                 Governance decision
+
                             </strong>
+
+
 
                             <p id="audit-decision-text">
+
                                 Waiting for agent routing.
+
                             </p>
+
+
 
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div
+
                         id="audit-review"
+
                         class="timeline-item"
+
                     >
+
+
 
                         <div class="timeline-dot"></div>
 
+
+
                         <div>
 
+
+
                             <strong>
+
                                 Human review
+
                             </strong>
 
+
+
                             <p id="audit-review-text">
+
                                 Not required yet.
+
                             </p>
+
+
 
                         </div>
 
+
+
                     </div>
+
+
 
                 </div>
 
+
+
             </section>
+
+
+
 
 
             <!-- ANALYTICS -->
 
+
+
             <section
+
                 id="section-analytics"
+
                 class="section"
+
             >
+
+
 
                 <div class="section-header">
 
+
+
                     <div class="eyebrow">
+
                         CAREGUARD INSIGHTS
+
                     </div>
 
+
+
                     <h1>
+
                         Analytics
+
                     </h1>
 
+
+
                     <p>
+
                         Hackathon session-level governance metrics.
+
                     </p>
 
+
+
                 </div>
+
+
+
 
 
                 <div class="analytics-grid">
 
+
+
                     <div class="analytics-card">
 
+
+
                         <div
+
                             id="metric-questions"
+
                             class="analytics-number"
+
                         >
+
                             0
+
                         </div>
 
+
+
                         <div class="analytics-label">
+
                             Questions
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="analytics-card">
 
+
+
                         <div
+
                             id="metric-answers"
+
                             class="analytics-number"
+
                         >
+
                             0
+
                         </div>
 
+
+
                         <div class="analytics-label">
+
                             Grounded answers
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="analytics-card">
 
+
+
                         <div
+
                             id="metric-reviews"
+
                             class="analytics-number"
+
                         >
+
                             0
+
                         </div>
 
+
+
                         <div class="analytics-label">
+
                             Human reviews
+
                         </div>
+
+
 
                     </div>
 
 
+
+
+
                     <div class="analytics-card">
 
+
+
                         <div
+
                             id="metric-refusals"
+
                             class="analytics-number"
+
                         >
+
                             0
+
                         </div>
+
+
 
                         <div class="analytics-label">
+
                             Safe refusals
+
                         </div>
 
+
+
                     </div>
+
+
+
 
 
                     <div class="analytics-card">
 
+
+
                         <div
+
                             id="metric-high-risk"
+
                             class="analytics-number"
+
                         >
+
                             0
+
                         </div>
+
+
 
                         <div class="analytics-label">
+
                             High / critical risk
+
                         </div>
 
+
+
                     </div>
+
+
 
                 </div>
+
+
 
             </section>
 
 
+
+
+
         </div>
 
+
+
     </main>
+
+
 
 </div>
 
 
+
+
+
 <script src="/static/careguard.js"></script>
 
+
+
 </body>
+
+
 
 </html>
