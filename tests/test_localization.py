@@ -1,122 +1,151 @@
 from __future__ import annotations
 
-import pytest
+from fastapi.testclient import TestClient
 
-from fastapi.testclient import (
-    TestClient,
+from app.main import app
+from app.security.easyauth import (
+    require_authenticated_user,
 )
 
 
-def test_localization_route_exists(
-    monkeypatch,
-):
+# =====================================================================
+# TEST IDENTITY
+# =====================================================================
 
-    monkeypatch.setenv(
-        "APP_ENV",
-        "test",
-    )
 
-    monkeypatch.setenv(
-        "AUTH_MODE",
-        "dev",
-    )
+def _test_authenticated_user() -> dict:
 
-    from app.main import app
+    return {
+        "authenticated": True,
+        "identity_provider": "test",
+        "actor_id": "test-user",
+        "user": "test-user",
+        "roles": [
+            "HealthcareRAG.User",
+        ],
+        "is_reviewer": False,
+    }
 
-    client = TestClient(
+
+# =====================================================================
+# HELPERS
+# =====================================================================
+
+
+def _create_client() -> TestClient:
+
+    app.dependency_overrides[
+        require_authenticated_user
+    ] = _test_authenticated_user
+
+    return TestClient(
         app
     )
 
-    response = client.post(
-        "/api/v1/localization/translate",
-        json={
-            "text":
-                "POL-DM-001",
-            "target_language":
-                "en",
-        },
-    )
 
-    assert (
-        response.status_code
-        == 200
-    )
+def _clear_overrides() -> None:
 
-    body = response.json()
-
-    assert (
-        body["translated_text"]
-        == "POL-DM-001"
-    )
+    app.dependency_overrides.clear()
 
 
-def test_empty_translation_rejected(
-    monkeypatch,
-):
-
-    monkeypatch.setenv(
-        "APP_ENV",
-        "test",
-    )
-
-    monkeypatch.setenv(
-        "AUTH_MODE",
-        "dev",
-    )
-
-    from app.main import app
-
-    client = TestClient(
-        app
-    )
-
-    response = client.post(
-        "/api/v1/localization/translate",
-        json={
-            "text":
-                "",
-            "target_language":
-                "ar",
-        },
-    )
-
-    assert (
-        response.status_code
-        == 422
-    )
+# =====================================================================
+# TESTS
+# =====================================================================
 
 
-def test_invalid_language_rejected(
-    monkeypatch,
-):
+def test_localization_route_exists():
 
-    monkeypatch.setenv(
-        "APP_ENV",
-        "test",
-    )
+    client = _create_client()
 
-    monkeypatch.setenv(
-        "AUTH_MODE",
-        "dev",
-    )
+    try:
 
-    from app.main import app
+        response = client.post(
+            "/api/v1/localization/translate",
+            json={
+                "text":
+                    "POL-DM-001",
 
-    client = TestClient(
-        app
-    )
+                "target_language":
+                    "en",
+            },
+        )
 
-    response = client.post(
-        "/api/v1/localization/translate",
-        json={
-            "text":
-                "test",
-            "target_language":
-                "fr",
-        },
-    )
+        assert (
+            response.status_code
+            == 200
+        )
 
-    assert (
-        response.status_code
-        == 422
-    )
+        body = response.json()
+
+        assert (
+            body["source_text"]
+            == "POL-DM-001"
+        )
+
+        assert (
+            body["translated_text"]
+            == "POL-DM-001"
+        )
+
+        assert (
+            body["target_language"]
+            == "en"
+        )
+
+    finally:
+
+        _clear_overrides()
+
+
+def test_empty_translation_rejected():
+
+    client = _create_client()
+
+    try:
+
+        response = client.post(
+            "/api/v1/localization/translate",
+            json={
+                "text":
+                    "",
+
+                "target_language":
+                    "ar",
+            },
+        )
+
+        assert (
+            response.status_code
+            == 422
+        )
+
+    finally:
+
+        _clear_overrides()
+
+
+def test_invalid_language_rejected():
+
+    client = _create_client()
+
+    try:
+
+        response = client.post(
+            "/api/v1/localization/translate",
+            json={
+                "text":
+                    "test",
+
+                "target_language":
+                    "fr",
+            },
+        )
+
+        assert (
+            response.status_code
+            == 422
+        )
+
+    finally:
+
+        _clear_overrides()

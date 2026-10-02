@@ -10,11 +10,8 @@ class RiskLevel(
 ):
 
     LOW = "LOW"
-
     MEDIUM = "MEDIUM"
-
     HIGH = "HIGH"
-
     CRITICAL = "CRITICAL"
 
 
@@ -24,11 +21,8 @@ class EvidenceStrength(
 ):
 
     NONE = "NONE"
-
     WEAK = "WEAK"
-
     MODERATE = "MODERATE"
-
     STRONG = "STRONG"
 
 
@@ -38,13 +32,9 @@ class GovernanceDecision(
 ):
 
     ANSWER = "ANSWER"
-
     REFUSE = "REFUSE"
-
     HUMAN_REVIEW = "HUMAN_REVIEW"
-
     ACTION = "ACTION"
-
     ERROR = "ERROR"
 
 
@@ -54,7 +44,6 @@ class GovernanceDecision(
 class RiskAssessment:
 
     risk_level: RiskLevel
-
     risk_reason: str
 
     evidence_strength: EvidenceStrength
@@ -62,8 +51,12 @@ class RiskAssessment:
     governance_decision: GovernanceDecision
 
     human_review_required: bool
-
     autonomous_action_allowed: bool
+
+
+# =====================================================================
+# PATTERNS
+# =====================================================================
 
 
 CRITICAL_PATTERNS = (
@@ -71,9 +64,7 @@ CRITICAL_PATTERNS = (
     "double the dose",
 
     "increase the dose",
-
     "reduce the dose",
-
     "change the dose",
 
     "change medication",
@@ -87,9 +78,7 @@ CRITICAL_PATTERNS = (
     "prescribe",
 
     "start treatment",
-
     "change treatment",
-
     "discontinue treatment",
 
 )
@@ -98,27 +87,22 @@ CRITICAL_PATTERNS = (
 HIGH_RISK_PATTERNS = (
 
     "what should i do",
-
     "what should we do",
 
     "should i",
-
     "should we",
 
     "is it safe to",
 
     "can i give",
-
     "can we give",
 
     "do i need to",
 
     "what treatment",
-
     "which treatment",
 
     "diagnose",
-
     "diagnosis",
 
 )
@@ -127,15 +111,21 @@ HIGH_RISK_PATTERNS = (
 FALSE_PREMISE_PATTERNS = (
 
     "correct?",
+    "correct ?",
 
     "right?",
+    "right ?",
 
     "isn't it",
+    "isnt it",
+
+    "is that correct",
+    "is this correct",
 
     "doesn't the policy",
+    "doesnt the policy",
 
     "the policy says",
-
     "policy says",
 
     "according to the policy",
@@ -148,11 +138,9 @@ ACTION_PATTERNS = (
     "create review request",
 
     "send for review",
-
     "submit for review",
 
     "raise a ticket",
-
     "raise ticket",
 
     "escalate",
@@ -160,6 +148,11 @@ ACTION_PATTERNS = (
     "create a case",
 
 )
+
+
+# =====================================================================
+# HELPERS
+# =====================================================================
 
 
 def _normalize(
@@ -185,6 +178,11 @@ def _contains_any(
     )
 
 
+# =====================================================================
+# EVIDENCE STRENGTH
+# =====================================================================
+
+
 def determine_evidence_strength(
     *,
     citations_count: int,
@@ -204,6 +202,7 @@ def determine_evidence_strength(
         )
     )
 
+
     if (
         "cannot find sufficient information"
         in normalized_answer
@@ -212,6 +211,7 @@ def determine_evidence_strength(
         return (
             EvidenceStrength.NONE
         )
+
 
     if (
         normalized_status
@@ -223,21 +223,13 @@ def determine_evidence_strength(
             EvidenceStrength.STRONG
         )
 
-    if (
-        citations_count >= 2
-    ):
+
+    if citations_count > 0:
 
         return (
             EvidenceStrength.STRONG
         )
 
-    if (
-        citations_count == 1
-    ):
-
-        return (
-            EvidenceStrength.STRONG
-        )
 
     if (
         normalized_status
@@ -248,15 +240,22 @@ def determine_evidence_strength(
             EvidenceStrength.MODERATE
         )
 
+
     if answer:
 
         return (
             EvidenceStrength.WEAK
         )
 
+
     return (
         EvidenceStrength.NONE
     )
+
+
+# =====================================================================
+# BASE GOVERNANCE DECISION
+# =====================================================================
 
 
 def determine_governance_decision(
@@ -273,11 +272,13 @@ def determine_governance_decision(
             GovernanceDecision.ERROR
         )
 
+
     if action_requested:
 
         return (
             GovernanceDecision.ACTION
         )
+
 
     normalized_status = (
         _normalize(
@@ -291,6 +292,7 @@ def determine_governance_decision(
         )
     )
 
+
     if (
         normalized_status
         == "waiting_for_review"
@@ -299,6 +301,7 @@ def determine_governance_decision(
         return (
             GovernanceDecision.HUMAN_REVIEW
         )
+
 
     if (
         "cannot find sufficient information"
@@ -309,9 +312,15 @@ def determine_governance_decision(
             GovernanceDecision.REFUSE
         )
 
+
     return (
         GovernanceDecision.ANSWER
     )
+
+
+# =====================================================================
+# RISK ASSESSMENT
+# =====================================================================
 
 
 def assess_risk(
@@ -330,6 +339,7 @@ def assess_risk(
         )
     )
 
+
     evidence_strength = (
         determine_evidence_strength(
             citations_count=(
@@ -340,7 +350,8 @@ def assess_risk(
         )
     )
 
-    governance_decision = (
+
+    base_governance_decision = (
         determine_governance_decision(
             status=status,
             answer=answer,
@@ -351,12 +362,14 @@ def assess_risk(
         )
     )
 
+
     critical_action = (
         _contains_any(
             normalized_question,
             CRITICAL_PATTERNS,
         )
     )
+
 
     clinical_decision = (
         _contains_any(
@@ -365,12 +378,14 @@ def assess_risk(
         )
     )
 
+
     false_premise = (
         _contains_any(
             normalized_question,
             FALSE_PREMISE_PATTERNS,
         )
     )
+
 
     requested_action = (
         action_requested
@@ -379,6 +394,11 @@ def assess_risk(
             ACTION_PATTERNS,
         )
     )
+
+
+    # -----------------------------------------------------------------
+    # 1. Critical clinical instruction
+    # -----------------------------------------------------------------
 
     if critical_action:
 
@@ -409,8 +429,50 @@ def assess_risk(
 
         )
 
+
+    # -----------------------------------------------------------------
+    # 2. False premise / policy confirmation
+    #
+    # Important:
+    # This must override ANSWER.
+    # -----------------------------------------------------------------
+
+    if false_premise:
+
+        return RiskAssessment(
+
+            risk_level=(
+                RiskLevel.HIGH
+            ),
+
+            risk_reason=(
+                "The question asks CareGuard to confirm an asserted "
+                "policy premise that may conflict with approved "
+                "evidence. Human review is required before the "
+                "response is accepted."
+            ),
+
+            evidence_strength=(
+                evidence_strength
+            ),
+
+            governance_decision=(
+                GovernanceDecision.HUMAN_REVIEW
+            ),
+
+            human_review_required=True,
+
+            autonomous_action_allowed=False,
+
+        )
+
+
+    # -----------------------------------------------------------------
+    # 3. Graph already waiting for reviewer
+    # -----------------------------------------------------------------
+
     if (
-        governance_decision
+        base_governance_decision
         == GovernanceDecision.HUMAN_REVIEW
     ):
 
@@ -420,21 +482,15 @@ def assess_risk(
             "request can proceed."
         )
 
-        if false_premise:
 
-            reason = (
-                "The question contains a premise that may "
-                "conflict with approved policy evidence. "
-                "Human review is required."
-            )
-
-        elif clinical_decision:
+        if clinical_decision:
 
             reason = (
                 "The request asks for a clinical judgment "
                 "or decision rather than a straightforward "
                 "policy lookup."
             )
+
 
         return RiskAssessment(
 
@@ -449,7 +505,7 @@ def assess_risk(
             ),
 
             governance_decision=(
-                governance_decision
+                GovernanceDecision.HUMAN_REVIEW
             ),
 
             human_review_required=True,
@@ -457,6 +513,11 @@ def assess_risk(
             autonomous_action_allowed=False,
 
         )
+
+
+    # -----------------------------------------------------------------
+    # 4. Clinical decision request
+    # -----------------------------------------------------------------
 
     if clinical_decision:
 
@@ -486,6 +547,11 @@ def assess_risk(
 
         )
 
+
+    # -----------------------------------------------------------------
+    # 5. Operational action
+    # -----------------------------------------------------------------
+
     if requested_action:
 
         return RiskAssessment(
@@ -514,8 +580,13 @@ def assess_risk(
 
         )
 
+
+    # -----------------------------------------------------------------
+    # 6. Unsupported evidence
+    # -----------------------------------------------------------------
+
     if (
-        governance_decision
+        base_governance_decision
         == GovernanceDecision.REFUSE
     ):
 
@@ -543,6 +614,11 @@ def assess_risk(
             autonomous_action_allowed=False,
 
         )
+
+
+    # -----------------------------------------------------------------
+    # 7. Error
+    # -----------------------------------------------------------------
 
     if error:
 
@@ -572,37 +648,10 @@ def assess_risk(
 
         )
 
-    if (
-        false_premise
-        and evidence_strength
-        != EvidenceStrength.NONE
-    ):
 
-        return RiskAssessment(
-
-            risk_level=(
-                RiskLevel.MEDIUM
-            ),
-
-            risk_reason=(
-                "The question contains an assertion about "
-                "approved policy. CareGuard verified the answer "
-                "against supporting evidence."
-            ),
-
-            evidence_strength=(
-                evidence_strength
-            ),
-
-            governance_decision=(
-                governance_decision
-            ),
-
-            human_review_required=False,
-
-            autonomous_action_allowed=False,
-
-        )
+    # -----------------------------------------------------------------
+    # 8. Straightforward informational answer
+    # -----------------------------------------------------------------
 
     return RiskAssessment(
 
@@ -621,7 +670,7 @@ def assess_risk(
         ),
 
         governance_decision=(
-            governance_decision
+            base_governance_decision
         ),
 
         human_review_required=False,
