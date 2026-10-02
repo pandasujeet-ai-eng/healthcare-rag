@@ -1,1153 +1,2305 @@
 "use strict";
 
 
+
+
+
 /* ============================================================= */
-/* CAREGUARD V1.7 - HACKATHON DEMO POLISH                        */
+
+/* CAREGUARD V1.7.2 - HACKATHON DEMO POLISH                        */
+
 /* ============================================================= */
+
+
+
 
 
 let lastObservedState =
-    null;
+
+    null;
+
+
+
 
 
 const demoScenarios = [
 
-    {
-        type:
-            "Grounded Answer",
 
-        name:
-            "Approved policy",
 
-        description:
-            "Demonstrates evidence-grounded policy answering.",
+    {
 
-    },
+        type:
 
-    {
-        type:
-            "Human Oversight",
+            "Grounded Answer",
 
-        name:
-            "Evidence conflict",
 
-        description:
-            "Challenges an incorrect policy assumption and triggers review.",
 
-    },
+        name:
 
-    {
-        type:
-            "Safe Refusal",
+            "Approved policy",
 
-        name:
-            "Unsupported request",
 
-        description:
-            "Shows how CareGuard refuses when approved evidence is unavailable.",
 
-    },
+        description:
 
-    {
-        type:
-            "Clinical Safety",
+            "Demonstrates evidence-grounded policy answering.",
 
-        name:
-            "Critical request",
 
-        description:
-            "Demonstrates clinical risk detection and mandatory oversight.",
 
-    },
+    },
+
+
+
+    {
+
+        type:
+
+            "Human Oversight",
+
+
+
+        name:
+
+            "Evidence conflict",
+
+
+
+        description:
+
+            "Challenges an incorrect policy assumption and triggers review.",
+
+
+
+    },
+
+
+
+    {
+
+        type:
+
+            "Safe Refusal",
+
+
+
+        name:
+
+            "Unsupported request",
+
+
+
+        description:
+
+            "Shows how CareGuard refuses when approved evidence is unavailable.",
+
+
+
+    },
+
+
+
+    {
+
+        type:
+
+            "Clinical Safety",
+
+
+
+        name:
+
+            "Critical request",
+
+
+
+        description:
+
+            "Demonstrates clinical risk detection and mandatory oversight.",
+
+
+
+    },
+
+
 
 ];
 
 
+
+
+
 /* ============================================================= */
-/* TRUST STRIP                                                   */
+
+/* TRUST STRIP                                                   */
+
 /* ============================================================= */
+
+
+
 
 
 function createTrustStrip() {
 
-    if (
-        document.querySelector(
-            ".demo-trust-strip"
-        )
-    ) {
-
-        return;
-
-    }
 
 
-    const askSection =
-        document.getElementById(
-            "section-ask"
-        );
+    if (
+
+        document.querySelector(
+
+            ".demo-trust-strip"
+
+        )
+
+    ) {
 
 
-    const hero =
-        askSection
-            ?.querySelector(
-                ".hero"
-            );
+
+        return;
 
 
-    if (
-        !askSection
-        || !hero
-    ) {
 
-        return;
-
-    }
+    }
 
 
-    const strip =
-        document.createElement(
-            "div"
-        );
 
 
-    strip.className =
-        "demo-trust-strip";
+
+    const askSection =
+
+        document.getElementById(
+
+            "section-ask"
+
+        );
 
 
-    strip.innerHTML = `
-        <div class="demo-trust-left">
-
-            <div class="demo-mode-chip">
-
-                <span class="demo-mode-dot"></span>
-
-                HACKATHON DEMO MODE
-
-            </div>
-
-            <div class="demo-trust-message">
-                Governed healthcare AI over approved knowledge
-            </div>
-
-        </div>
 
 
-        <div class="demo-capabilities">
 
-            <span class="demo-capability">
-                Evidence Grounded
-            </span>
+    const hero =
 
-            <span class="demo-capability">
-                Risk Aware
-            </span>
+        askSection
 
-            <span class="demo-capability">
-                Human Oversight
-            </span>
+            ?.querySelector(
 
-            <span class="demo-capability">
-                Auditable
-            </span>
+                ".hero"
 
-        </div>
-    `;
+            );
 
 
-    askSection.insertBefore(
-        strip,
-        hero
-    );
+
+
+
+    if (
+
+        !askSection
+
+        || !hero
+
+    ) {
+
+
+
+        return;
+
+
+
+    }
+
+
+
+
+
+    const strip =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+
+
+
+
+    strip.className =
+
+        "demo-trust-strip";
+
+
+
+
+
+    strip.innerHTML = `
+
+        <div class="demo-trust-left">
+
+
+
+            <div class="demo-mode-chip">
+
+
+
+                <span class="demo-mode-dot"></span>
+
+
+
+                HACKATHON DEMO MODE
+
+
+
+            </div>
+
+
+
+            <div class="demo-trust-message">
+
+                Governance-first healthcare AI over approved knowledge
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+        <div class="demo-capabilities">
+
+
+
+            <span class="demo-capability">
+
+                Evidence Grounded
+
+            </span>
+
+
+
+            <span class="demo-capability">
+
+                Risk Aware
+
+            </span>
+
+
+
+            <span class="demo-capability">
+
+                Human Oversight
+
+            </span>
+
+
+
+            <span class="demo-capability">
+
+                Auditable
+
+            </span>
+
+
+
+        </div>
+
+    `;
+
+
+
+
+
+    askSection.insertBefore(
+
+        strip,
+
+        hero
+
+    );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* SCENARIO CARDS                                                */
+
+/* SCENARIO CARDS                                                */
+
 /* ============================================================= */
+
+
+
 
 
 function enhanceScenarioCards() {
 
-    const row =
-        document.querySelector(
-            ".example-row"
-        );
 
 
-    if (!row) {
+    const row =
 
-        return;
+        document.querySelector(
 
-    }
+            ".example-row"
 
-
-    if (
-        !document.querySelector(
-            ".demo-scenario-title"
-        )
-    ) {
-
-        const title =
-            document.createElement(
-                "div"
-            );
+        );
 
 
-        title.className =
-            "demo-scenario-title";
 
 
-        title.innerHTML = `
-            <div class="demo-scenario-heading">
-                Demo Scenarios
-            </div>
 
-            <div class="demo-scenario-helper">
-                Select a scenario, then ask CareGuard
-            </div>
-        `;
+    if (!row) {
 
 
-        row.parentElement.insertBefore(
-            title,
-            row
-        );
 
-    }
+        return;
 
 
-    const buttons =
-        row.querySelectorAll(
-            ".example-question"
-        );
+
+    }
 
 
-    buttons.forEach(
-        (
-            button,
-            index
-        ) => {
-
-            if (
-                button.dataset.demoEnhanced
-                === "true"
-            ) {
-
-                return;
-
-            }
 
 
-            const scenario =
-                demoScenarios[
-                    index
-                ];
+
+    if (
+
+        !document.querySelector(
+
+            ".demo-scenario-title"
+
+        )
+
+    ) {
 
 
-            if (!scenario) {
 
-                return;
+        const title =
 
-            }
+            document.createElement(
 
+                "div"
 
-            button.dataset.demoEnhanced =
-                "true";
-
-
-            button.innerHTML = `
-                <span class="demo-scenario-number">
-                    ${index + 1}
-                </span>
-
-                <span class="demo-scenario-type">
-                    ${escapeDemoHtml(
-                        scenario.type
-                    )}
-                </span>
-
-                <span class="demo-scenario-name">
-                    ${escapeDemoHtml(
-                        scenario.name
-                    )}
-                </span>
-
-                <span class="demo-scenario-description">
-                    ${escapeDemoHtml(
-                        scenario.description
-                    )}
-                </span>
-            `;
+            );
 
 
-            button.addEventListener(
-                "click",
-                () => {
 
-                    setActiveScenario(
-                        button
-                    );
 
-                }
-            );
 
-        }
-    );
+        title.className =
+
+            "demo-scenario-title";
+
+
+
+
+
+        title.innerHTML = `
+
+            <div class="demo-scenario-heading">
+
+                Demo Scenarios
+
+            </div>
+
+
+
+            <div class="demo-scenario-helper">
+
+                Select a scenario, then ask CareGuard
+
+            </div>
+
+        `;
+
+
+
+
+
+        row.parentElement.insertBefore(
+
+            title,
+
+            row
+
+        );
+
+
+
+    }
+
+
+
+
+
+    const buttons =
+
+        row.querySelectorAll(
+
+            ".example-question"
+
+        );
+
+
+
+
+
+    buttons.forEach(
+
+        (
+
+            button,
+
+            index
+
+        ) => {
+
+
+
+            if (
+
+                button.dataset.demoEnhanced
+
+                === "true"
+
+            ) {
+
+
+
+                return;
+
+
+
+            }
+
+
+
+
+
+            const scenario =
+
+                demoScenarios[
+
+                    index
+
+                ];
+
+
+
+
+
+            if (!scenario) {
+
+
+
+                return;
+
+
+
+            }
+
+
+
+
+
+            button.dataset.demoEnhanced =
+
+                "true";
+
+
+
+
+
+            button.innerHTML = `
+
+                <span class="demo-scenario-number">
+
+                    ${index + 1}
+
+                </span>
+
+
+
+                <span class="demo-scenario-type">
+
+                    ${escapeDemoHtml(
+
+                        scenario.type
+
+                    )}
+
+                </span>
+
+
+
+                <span class="demo-scenario-name">
+
+                    ${escapeDemoHtml(
+
+                        scenario.name
+
+                    )}
+
+                </span>
+
+
+
+                <span class="demo-scenario-description">
+
+                    ${escapeDemoHtml(
+
+                        scenario.description
+
+                    )}
+
+                </span>
+
+            `;
+
+
+
+
+
+            button.addEventListener(
+
+                "click",
+
+                () => {
+
+
+
+                    setActiveScenario(
+
+                        button
+
+                    );
+
+
+
+                }
+
+            );
+
+
+
+        }
+
+    );
+
+
 
 }
+
+
+
 
 
 function setActiveScenario(
-    selectedButton,
+
+    selectedButton,
+
 ) {
 
-    document
-        .querySelectorAll(
-            ".example-question"
-        )
-        .forEach(
-            button => {
-
-                button
-                    .classList
-                    .remove(
-                        "active-demo"
-                    );
-
-            }
-        );
 
 
-    selectedButton
-        .classList
-        .add(
-            "active-demo"
-        );
+    document
+
+        .querySelectorAll(
+
+            ".example-question"
+
+        )
+
+        .forEach(
+
+            button => {
+
+
+
+                button
+
+                    .classList
+
+                    .remove(
+
+                        "active-demo"
+
+                    );
+
+
+
+            }
+
+        );
+
+
+
+
+
+    selectedButton
+
+        .classList
+
+        .add(
+
+            "active-demo"
+
+        );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* HEADER                                                        */
+
+/* HEADER                                                        */
+
 /* ============================================================= */
+
+
+
 
 
 function createHeaderControls() {
 
-    if (
-        document.querySelector(
-            ".demo-header-controls"
-        )
-    ) {
-
-        return;
-
-    }
 
 
-    const userArea =
-        document.querySelector(
-            ".user-area"
-        );
+    if (
+
+        document.querySelector(
+
+            ".demo-header-controls"
+
+        )
+
+    ) {
 
 
-    if (!userArea) {
 
-        return;
-
-    }
+        return;
 
 
-    const controls =
-        document.createElement(
-            "div"
-        );
+
+    }
 
 
-    controls.className =
-        "demo-header-controls";
 
 
-    controls.innerHTML = `
-        <button
-            id="demo-reset-button"
-            class="demo-reset-button"
-            type="button"
-            title="Reset the presentation UI"
-        >
-            ↻ Reset Demo
-        </button>
-    `;
+
+    const userArea =
+
+        document.querySelector(
+
+            ".user-area"
+
+        );
 
 
-    userArea.insertBefore(
-        controls,
-        userArea.firstChild
-    );
 
 
-    document
-        .getElementById(
-            "demo-reset-button"
-        )
-        .addEventListener(
-            "click",
-            resetDemo
-        );
+
+    if (!userArea) {
+
+
+
+        return;
+
+
+
+    }
+
+
+
+
+
+    const controls =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+
+
+
+
+    controls.className =
+
+        "demo-header-controls";
+
+
+
+
+
+    controls.innerHTML = `
+
+        <button
+
+            id="demo-reset-button"
+
+            class="demo-reset-button"
+
+            type="button"
+
+            title="Reset the presentation UI"
+
+        >
+
+            ↻ Reset Demo
+
+        </button>
+
+    `;
+
+
+
+
+
+    userArea.insertBefore(
+
+        controls,
+
+        userArea.firstChild
+
+    );
+
+
+
+
+
+    document
+
+        .getElementById(
+
+            "demo-reset-button"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            resetDemo
+
+        );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* RESET                                                         */
+
+/* RESET                                                         */
+
 /* ============================================================= */
+
+
+
 
 
 function resetDemo() {
 
-    const question =
-        document.getElementById(
-            "question-input"
-        );
 
 
-    if (question) {
+    const question =
 
-        question.value =
-            "";
+        document.getElementById(
 
-    }
+            "question-input"
 
-
-    document
-        .querySelectorAll(
-            ".example-question"
-        )
-        .forEach(
-            button => {
-
-                button
-                    .classList
-                    .remove(
-                        "active-demo"
-                    );
-
-            }
-        );
+        );
 
 
-    const hideIds = [
-
-        "result-area",
-
-        "review-banner",
-
-        "review-actions",
-
-        "answer-card",
-
-        "provenance-card",
-
-        "error-card",
-
-        "risk-reason-card",
-
-    ];
 
 
-    hideIds.forEach(
-        id => {
 
-            document
-                .getElementById(
-                    id
-                )
-                ?.classList
-                .add(
-                    "hidden"
-                );
-
-        }
-    );
+    if (question) {
 
 
-    const askNav =
-        document.querySelector(
-            '[data-section="ask"]'
-        );
+
+        question.value =
+
+            "";
 
 
-    if (askNav) {
 
-        askNav.click();
-
-    }
+    }
 
 
-    window.scrollTo(
-        {
-            top:
-                0,
-
-            behavior:
-                "smooth",
-        }
-    );
 
 
-    showDemoToast(
-        "success",
-        "Demo reset",
-        "CareGuard is ready for the next scenario."
-    );
+
+    document
+
+        .querySelectorAll(
+
+            ".example-question"
+
+        )
+
+        .forEach(
+
+            button => {
+
+
+
+                button
+
+                    .classList
+
+                    .remove(
+
+                        "active-demo"
+
+                    );
+
+
+
+            }
+
+        );
+
+
+
+
+
+    const hideIds = [
+
+
+
+        "result-area",
+
+
+
+        "review-banner",
+
+
+
+        "review-actions",
+
+
+
+        "answer-card",
+
+
+
+        "provenance-card",
+
+
+
+        "error-card",
+
+
+
+        "risk-reason-card",
+
+
+
+    ];
+
+
+
+
+
+    hideIds.forEach(
+
+        id => {
+
+
+
+            document
+
+                .getElementById(
+
+                    id
+
+                )
+
+                ?.classList
+
+                .add(
+
+                    "hidden"
+
+                );
+
+
+
+        }
+
+    );
+
+
+
+
+
+    const askNav =
+
+        document.querySelector(
+
+            '[data-section="ask"]'
+
+        );
+
+
+
+
+
+    if (askNav) {
+
+
+
+        askNav.click();
+
+
+
+    }
+
+
+
+
+
+    window.scrollTo(
+
+        {
+
+            top:
+
+                0,
+
+
+
+            behavior:
+
+                "smooth",
+
+        }
+
+    );
+
+
+
+
+
+    showDemoToast(
+
+        "success",
+
+        "Demo reset",
+
+        "CareGuard is ready for the next scenario."
+
+    );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* RESULT ANIMATION                                              */
+
+/* RESULT ANIMATION                                              */
+
 /* ============================================================= */
+
+
+
 
 
 function animateResults() {
 
-    const result =
-        document.getElementById(
-            "result-area"
-        );
 
 
-    if (!result) {
+    const result =
 
-        return;
+        document.getElementById(
 
-    }
+            "result-area"
 
-
-    result
-        .classList
-        .remove(
-            "demo-result-enter"
-        );
+        );
 
 
-    void result.offsetWidth;
 
 
-    result
-        .classList
-        .add(
-            "demo-result-enter"
-        );
+
+    if (!result) {
+
+
+
+        return;
+
+
+
+    }
+
+
+
+
+
+    result
+
+        .classList
+
+        .remove(
+
+            "demo-result-enter"
+
+        );
+
+
+
+
+
+    void result.offsetWidth;
+
+
+
+
+
+    result
+
+        .classList
+
+        .add(
+
+            "demo-result-enter"
+
+        );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* TOASTS                                                        */
+
+/* TOASTS                                                        */
+
 /* ============================================================= */
+
+
+
 
 
 function ensureToastRegion() {
 
-    let region =
-        document.querySelector(
-            ".demo-toast-region"
-        );
 
 
-    if (region) {
+    let region =
 
-        return region;
+        document.querySelector(
 
-    }
+            ".demo-toast-region"
 
-
-    region =
-        document.createElement(
-            "div"
-        );
+        );
 
 
-    region.className =
-        "demo-toast-region";
 
 
-    region.setAttribute(
-        "aria-live",
-        "polite"
-    );
+
+    if (region) {
 
 
-    document.body.appendChild(
-        region
-    );
+
+        return region;
 
 
-    return region;
+
+    }
+
+
+
+
+
+    region =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+
+
+
+
+    region.className =
+
+        "demo-toast-region";
+
+
+
+
+
+    region.setAttribute(
+
+        "aria-live",
+
+        "polite"
+
+    );
+
+
+
+
+
+    document.body.appendChild(
+
+        region
+
+    );
+
+
+
+
+
+    return region;
+
+
 
 }
+
+
+
 
 
 function showDemoToast(
-    type,
-    title,
-    message,
+
+    type,
+
+    title,
+
+    message,
+
 ) {
 
-    const region =
-        ensureToastRegion();
 
 
-    const toast =
-        document.createElement(
-            "div"
-        );
+    const region =
+
+        ensureToastRegion();
 
 
-    toast.className =
-        `demo-toast ${type}`;
 
 
-    const iconMap = {
 
-        success:
-            "✓",
+    const toast =
 
-        review:
-            "!",
+        document.createElement(
 
-        refusal:
-            "i",
+            "div"
 
-        critical:
-            "!",
-
-    };
+        );
 
 
-    toast.innerHTML = `
-        <div class="demo-toast-icon">
-            ${iconMap[type] || "i"}
-        </div>
-
-        <div>
-
-            <div class="demo-toast-title">
-                ${escapeDemoHtml(title)}
-            </div>
-
-            <div class="demo-toast-message">
-                ${escapeDemoHtml(message)}
-            </div>
-
-        </div>
-    `;
 
 
-    region.appendChild(
-        toast
-    );
+
+    toast.className =
+
+        `demo-toast ${type}`;
 
 
-    window.setTimeout(
-        () => {
 
-            toast.remove();
 
-        },
-        4200
-    );
+
+    const iconMap = {
+
+
+
+        success:
+
+            "✓",
+
+
+
+        review:
+
+            "!",
+
+
+
+        refusal:
+
+            "i",
+
+
+
+        critical:
+
+            "!",
+
+
+
+    };
+
+
+
+
+
+    toast.innerHTML = `
+
+        <div class="demo-toast-icon">
+
+            ${iconMap[type] || "i"}
+
+        </div>
+
+
+
+        <div>
+
+
+
+            <div class="demo-toast-title">
+
+                ${escapeDemoHtml(title)}
+
+            </div>
+
+
+
+            <div class="demo-toast-message">
+
+                ${escapeDemoHtml(message)}
+
+            </div>
+
+
+
+        </div>
+
+    `;
+
+
+
+
+
+    region.appendChild(
+
+        toast
+
+    );
+
+
+
+
+
+    window.setTimeout(
+
+        () => {
+
+
+
+            toast.remove();
+
+
+
+        },
+
+        4200
+
+    );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* WATCH GOVERNANCE OUTCOME                                      */
+
+/* WATCH GOVERNANCE OUTCOME                                      */
+
 /* ============================================================= */
+
+
+
 
 
 function observeOutcome() {
 
-    const resultArea =
-        document.getElementById(
-            "result-area"
-        );
 
 
-    if (!resultArea) {
+    const resultArea =
 
-        return;
+        document.getElementById(
 
-    }
+            "result-area"
 
-
-    const observer =
-        new MutationObserver(
-            () => {
-
-                evaluateCurrentOutcome();
-
-            }
-        );
+        );
 
 
-    observer.observe(
-        resultArea,
-        {
-            childList:
-                true,
 
-            subtree:
-                true,
 
-            attributes:
-                true,
 
-            characterData:
-                true,
-        }
-    );
+    if (!resultArea) {
+
+
+
+        return;
+
+
+
+    }
+
+
+
+
+
+    const observer =
+
+        new MutationObserver(
+
+            () => {
+
+
+
+                evaluateCurrentOutcome();
+
+
+
+            }
+
+        );
+
+
+
+
+
+    observer.observe(
+
+        resultArea,
+
+        {
+
+            childList:
+
+                true,
+
+
+
+            subtree:
+
+                true,
+
+
+
+            attributes:
+
+                true,
+
+
+
+            characterData:
+
+                true,
+
+        }
+
+    );
+
+
 
 }
+
+
+
 
 
 function evaluateCurrentOutcome() {
 
-    const result =
-        document.getElementById(
-            "result-area"
-        );
 
 
-    if (
-        !result
-        || result.classList.contains(
-            "hidden"
-        )
-    ) {
+    const result =
 
-        return;
+        document.getElementById(
 
-    }
+            "result-area"
+
+        );
 
 
-    const risk =
-        document
-            .getElementById(
-                "risk-value"
-            )
-            ?.textContent
-            ?.trim()
-            ?.toUpperCase()
-        || "";
 
 
-    const decision =
-        document
-            .getElementById(
-                "decision-value"
-            )
-            ?.textContent
-            ?.trim()
-            ?.toUpperCase()
-        || "";
+
+    if (
+
+        !result
+
+        || result.classList.contains(
+
+            "hidden"
+
+        )
+
+    ) {
 
 
-    const answer =
-        document
-            .getElementById(
-                "answer-text"
-            )
-            ?.textContent
-            ?.trim()
-        || "";
+
+        return;
 
 
-    const reviewVisible =
-        !document
-            .getElementById(
-                "review-banner"
-            )
-            ?.classList
-            .contains(
-                "hidden"
-            );
+
+    }
 
 
-    let state =
-        "";
 
 
-    if (
-        risk.includes(
-            "CRITICAL"
-        )
-        && reviewVisible
-    ) {
 
-        state =
-            "critical-review";
+    const risk =
 
-    } else if (
-        reviewVisible
-    ) {
+        document
 
-        state =
-            "review";
+            .getElementById(
 
-    } else if (
-        answer
-            .toLowerCase()
-            .includes(
-                "cannot find sufficient information"
-            )
-    ) {
+                "risk-value"
 
-        state =
-            "refusal";
+            )
 
-    } else if (
-        answer
-        && decision.includes(
-            "ANSWER"
-        )
-    ) {
+            ?.textContent
 
-        state =
-            "answer";
+            ?.trim()
 
-    }
+            ?.toUpperCase()
+
+        || "";
 
 
-    if (
-        !state
-        || state
-            === lastObservedState
-    ) {
-
-        return;
-
-    }
 
 
-    lastObservedState =
-        state;
+
+    const decision =
+
+        document
+
+            .getElementById(
+
+                "decision-value"
+
+            )
+
+            ?.textContent
+
+            ?.trim()
+
+            ?.toUpperCase()
+
+        || "";
 
 
-    animateResults();
 
 
-    if (
-        state
-        === "critical-review"
-    ) {
 
-        showDemoToast(
-            "critical",
-            "Critical request intercepted",
-            "CareGuard requires authorized human oversight before proceeding."
-        );
+    const answer =
 
-    } else if (
-        state
-        === "review"
-    ) {
+        document
 
-        showDemoToast(
-            "review",
-            "Human review required",
-            "The request has been escalated to the Reviewer Command Center."
-        );
+            .getElementById(
 
-    } else if (
-        state
-        === "refusal"
-    ) {
+                "answer-text"
 
-        showDemoToast(
-            "refusal",
-            "Safe refusal",
-            "CareGuard found insufficient approved evidence and refused to speculate."
-        );
+            )
 
-    } else if (
-        state
-        === "answer"
-    ) {
+            ?.textContent
 
-        showDemoToast(
-            "success",
-            "Grounded response ready",
-            "The answer was generated using approved supporting evidence."
-        );
+            ?.trim()
 
-    }
+        || "";
+
+
+
+
+
+    const reviewVisible =
+
+        !document
+
+            .getElementById(
+
+                "review-banner"
+
+            )
+
+            ?.classList
+
+            .contains(
+
+                "hidden"
+
+            );
+
+
+
+
+
+    let state =
+
+        "";
+
+
+
+
+
+    if (
+
+        risk.includes(
+
+            "CRITICAL"
+
+        )
+
+        && reviewVisible
+
+    ) {
+
+
+
+        state =
+
+            "critical-review";
+
+
+
+    } else if (
+
+        reviewVisible
+
+    ) {
+
+
+
+        state =
+
+            "review";
+
+
+
+    } else if (
+
+        answer
+
+            .toLowerCase()
+
+            .includes(
+
+                "cannot find sufficient information"
+
+            )
+
+    ) {
+
+
+
+        state =
+
+            "refusal";
+
+
+
+    } else if (
+
+        answer
+
+        && decision.includes(
+
+            "ANSWER"
+
+        )
+
+    ) {
+
+
+
+        state =
+
+            "answer";
+
+
+
+    }
+
+
+
+
+
+    if (
+
+        !state
+
+        || state
+
+            === lastObservedState
+
+    ) {
+
+
+
+        return;
+
+
+
+    }
+
+
+
+
+
+    lastObservedState =
+
+        state;
+
+
+
+
+
+    animateResults();
+
+
+
+
+
+    if (
+
+        state
+
+        === "critical-review"
+
+    ) {
+
+
+
+        showDemoToast(
+
+            "critical",
+
+            "Critical request intercepted",
+
+            "CareGuard requires authorized human oversight before proceeding."
+
+        );
+
+
+
+    } else if (
+
+        state
+
+        === "review"
+
+    ) {
+
+
+
+        showDemoToast(
+
+            "review",
+
+            "Human review required",
+
+            "The request has been escalated to the Reviewer Command Center."
+
+        );
+
+
+
+    } else if (
+
+        state
+
+        === "refusal"
+
+    ) {
+
+
+
+        showDemoToast(
+
+            "refusal",
+
+            "Safe refusal",
+
+            "CareGuard found insufficient approved evidence and refused to speculate."
+
+        );
+
+
+
+    } else if (
+
+        state
+
+        === "answer"
+
+    ) {
+
+
+
+        showDemoToast(
+
+            "success",
+
+            "Grounded response ready",
+
+            "The answer was generated using approved supporting evidence."
+
+        );
+
+
+
+    }
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* VERSION                                                       */
+
+/* VERSION                                                       */
+
 /* ============================================================= */
+
+
+
 
 
 function updateVersion() {
 
-    const version =
-        document.querySelector(
-            ".footer-version"
-        );
 
 
-    if (version) {
+    const version =
 
-        version.textContent =
-            "Hackathon Product V1.7";
+        document.querySelector(
 
-    }
+            ".footer-version"
+
+        );
+
+
+
+
+
+    if (version) {
+
+
+
+        version.textContent =
+
+            "Hackathon Product V1.7.2";
+
+
+
+    }
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* RTL AWARE SMALL TEXT                                          */
+
+/* RTL AWARE SMALL TEXT                                          */
+
 /* ============================================================= */
+
+
+
 
 
 function updateDemoLanguage() {
 
-    const arabic =
-        document.documentElement.lang
-        === "ar";
 
 
-    const chip =
-        document.querySelector(
-            ".demo-mode-chip"
-        );
+    const arabic =
+
+        document.documentElement.lang
+
+        === "ar";
 
 
-    const message =
-        document.querySelector(
-            ".demo-trust-message"
-        );
 
 
-    const heading =
-        document.querySelector(
-            ".demo-scenario-heading"
-        );
+
+    const chip =
+
+        document.querySelector(
+
+            ".demo-mode-chip"
+
+        );
 
 
-    const helper =
-        document.querySelector(
-            ".demo-scenario-helper"
-        );
 
 
-    const reset =
-        document.getElementById(
-            "demo-reset-button"
-        );
+
+    const message =
+
+        document.querySelector(
+
+            ".demo-trust-message"
+
+        );
 
 
-    if (arabic) {
-
-        if (chip) {
-
-            chip.lastChild.textContent =
-                " وضع العرض التجريبي";
-
-        }
 
 
-        if (message) {
 
-            message.textContent =
-                "ذكاء اصطناعي محكوم يعتمد على المعرفة المعتمدة";
+    const heading =
 
-        }
+        document.querySelector(
 
+            ".demo-scenario-heading"
 
-        if (heading) {
-
-            heading.textContent =
-                "سيناريوهات العرض";
-
-        }
+        );
 
 
-        if (helper) {
-
-            helper.textContent =
-                "اختر سيناريو ثم اسأل CareGuard";
-
-        }
 
 
-        if (reset) {
 
-            reset.textContent =
-                "↻ إعادة العرض";
+    const helper =
 
-        }
+        document.querySelector(
 
-    } else {
+            ".demo-scenario-helper"
 
-        if (chip) {
-
-            chip.lastChild.textContent =
-                " HACKATHON DEMO MODE";
-
-        }
+        );
 
 
-        if (message) {
-
-            message.textContent =
-                "Governed healthcare AI over approved knowledge";
-
-        }
 
 
-        if (heading) {
 
-            heading.textContent =
-                "Demo Scenarios";
+    const reset =
 
-        }
+        document.getElementById(
 
+            "demo-reset-button"
 
-        if (helper) {
-
-            helper.textContent =
-                "Select a scenario, then ask CareGuard";
-
-        }
+        );
 
 
-        if (reset) {
 
-            reset.textContent =
-                "↻ Reset Demo";
 
-        }
 
-    }
+    if (arabic) {
+
+
+
+        if (chip) {
+
+
+
+            chip.lastChild.textContent =
+
+                " وضع العرض التجريبي";
+
+
+
+        }
+
+
+
+
+
+        if (message) {
+
+
+
+            message.textContent =
+
+                "ذكاء اصطناعي محكوم يعتمد على المعرفة المعتمدة";
+
+
+
+        }
+
+
+
+
+
+        if (heading) {
+
+
+
+            heading.textContent =
+
+                "سيناريوهات العرض";
+
+
+
+        }
+
+
+
+
+
+        if (helper) {
+
+
+
+            helper.textContent =
+
+                "اختر سيناريو ثم اسأل CareGuard";
+
+
+
+        }
+
+
+
+
+
+        if (reset) {
+
+
+
+            reset.textContent =
+
+                "↻ إعادة العرض";
+
+
+
+        }
+
+
+
+    } else {
+
+
+
+        if (chip) {
+
+
+
+            chip.lastChild.textContent =
+
+                " HACKATHON DEMO MODE";
+
+
+
+        }
+
+
+
+
+
+        if (message) {
+
+
+
+            message.textContent =
+
+                "Governance-first healthcare AI over approved knowledge";
+
+
+
+        }
+
+
+
+
+
+        if (heading) {
+
+
+
+            heading.textContent =
+
+                "Demo Scenarios";
+
+
+
+        }
+
+
+
+
+
+        if (helper) {
+
+
+
+            helper.textContent =
+
+                "Select a scenario, then ask CareGuard";
+
+
+
+        }
+
+
+
+
+
+        if (reset) {
+
+
+
+            reset.textContent =
+
+                "↻ Reset Demo";
+
+
+
+        }
+
+
+
+    }
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* LANGUAGE OBSERVER                                             */
+
+/* LANGUAGE OBSERVER                                             */
+
 /* ============================================================= */
+
+
+
 
 
 function observeLanguage() {
 
-    const observer =
-        new MutationObserver(
-            mutations => {
-
-                mutations.forEach(
-                    mutation => {
-
-                        if (
-                            mutation.type
-                            === "attributes"
-                            && mutation.attributeName
-                                === "lang"
-                        ) {
-
-                            updateDemoLanguage();
-
-                        }
-
-                    }
-                );
-
-            }
-        );
 
 
-    observer.observe(
-        document.documentElement,
-        {
-            attributes:
-                true,
+    const observer =
 
-            attributeFilter: [
-                "lang",
-            ],
-        }
-    );
+        new MutationObserver(
+
+            mutations => {
+
+
+
+                mutations.forEach(
+
+                    mutation => {
+
+
+
+                        if (
+
+                            mutation.type
+
+                            === "attributes"
+
+                            && mutation.attributeName
+
+                                === "lang"
+
+                        ) {
+
+
+
+                            updateDemoLanguage();
+
+
+
+                        }
+
+
+
+                    }
+
+                );
+
+
+
+            }
+
+        );
+
+
+
+
+
+    observer.observe(
+
+        document.documentElement,
+
+        {
+
+            attributes:
+
+                true,
+
+
+
+            attributeFilter: [
+
+                "lang",
+
+            ],
+
+        }
+
+    );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* HELPERS                                                       */
+
+/* HELPERS                                                       */
+
 /* ============================================================= */
+
+
+
 
 
 function escapeDemoHtml(
-    value,
+
+    value,
+
 ) {
 
-    return String(
-        value
-        ?? ""
-    )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+
+
+    return String(
+
+        value
+
+        ?? ""
+
+    )
+
+        .replaceAll(
+
+            "&",
+
+            "&amp;"
+
+        )
+
+        .replaceAll(
+
+            "<",
+
+            "&lt;"
+
+        )
+
+        .replaceAll(
+
+            ">",
+
+            "&gt;"
+
+        )
+
+        .replaceAll(
+
+            '"',
+
+            "&quot;"
+
+        )
+
+        .replaceAll(
+
+            "'",
+
+            "&#039;"
+
+        );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* STARTUP                                                       */
+
+/* STARTUP                                                       */
+
 /* ============================================================= */
+
+
+
 
 
 document.addEventListener(
-    "DOMContentLoaded",
-    () => {
 
-        createTrustStrip();
+    "DOMContentLoaded",
 
-        enhanceScenarioCards();
+    () => {
 
-        createHeaderControls();
 
-        ensureToastRegion();
 
-        updateVersion();
+        createTrustStrip();
 
-        updateDemoLanguage();
 
-        observeOutcome();
 
-        observeLanguage();
+        enhanceScenarioCards();
 
-    }
+
+
+        createHeaderControls();
+
+
+
+        ensureToastRegion();
+
+
+
+        updateVersion();
+
+
+
+        updateDemoLanguage();
+
+
+
+        observeOutcome();
+
+
+
+        observeLanguage();
+
+
+
+    }
+
 );

@@ -1,2038 +1,4075 @@
 "use strict";
 
 
+
+
+
 /* ============================================================= */
-/* CAREGUARD V1.6A - BILINGUAL UI                                */
+
+/* CAREGUARD V1.6A - BILINGUAL UI                                */
+
 /* ============================================================= */
+
+
+
 
 
 const CAREGUARD_LANGUAGE_KEY =
-    "careguard_language";
+
+    "careguard_language";
+
+
+
 
 
 let careGuardLanguage =
-    localStorage.getItem(
-        CAREGUARD_LANGUAGE_KEY
-    )
-    || "en";
+
+    localStorage.getItem(
+
+        CAREGUARD_LANGUAGE_KEY
+
+    )
+
+    || "en";
+
+
+
 
 
 let translationScheduled =
-    false;
+
+    false;
+
+
+
 
 
 /* ============================================================= */
-/* TRANSLATIONS                                                  */
+
+/* TRANSLATIONS                                                  */
+
 /* ============================================================= */
+
+
+
 
 
 const translations = {
 
-    en: {
 
-        askCareGuard:
-            "Ask CareGuard",
 
-        askSubtitle:
-            "Governed AI over approved hospital knowledge.",
+    en: {
 
-        reviews:
-            "Reviews",
 
-        auditTrail:
-            "Audit Trail",
 
-        analytics:
-            "Analytics",
+        askCareGuard:
 
-        reviewer:
-            "Reviewer",
+            "Ask CareGuard",
 
-        healthcareReviewer:
-            "Healthcare Reviewer",
 
-        healthcareUser:
-            "Healthcare User",
 
-        governedHealthcareAI:
-            "GOVERNED HEALTHCARE AI",
+        askSubtitle:
 
-        heroTitle:
-            "How can CareGuard help?",
+            "Evidence-aware governance over approved hospital knowledge.",
 
-        heroDescription:
-            "Ask about approved hospital policies, procedures and clinical operations. CareGuard evaluates evidence, provenance and governance risk before responding.",
 
-        approvedKnowledge:
-            "Approved knowledge only",
 
-        askButton:
-            "Ask CareGuard",
+        reviews:
 
-        analyzing:
-            "Analyzing",
+            "Reviews",
 
-        demo:
-            "Demo:",
 
-        normalPolicy:
-            "Normal policy question",
 
-        evidenceConflict:
-            "Evidence conflict",
+        auditTrail:
 
-        unsupported:
-            "Unsupported",
+            "Audit Trail",
 
-        criticalRequest:
-            "Critical request",
 
-        careguardIntelligence:
-            "CAREGUARD INTELLIGENCE",
 
-        governanceAssessment:
-            "Governance Assessment",
+        analytics:
 
-        riskLevel:
-            "Risk Level",
+            "Analytics",
 
-        governance:
-            "Governance",
 
-        evidenceStrength:
-            "Evidence Strength",
 
-        humanOversight:
-            "Human Oversight",
+        reviewer:
 
-        riskReason:
-            "Why CareGuard assigned this risk",
+            "Reviewer",
 
-        humanReviewRequired:
-            "Human Review Required",
 
-        thread:
-            "Thread:",
 
-        reject:
-            "Reject",
+        healthcareReviewer:
 
-        approve:
-            "Approve",
+            "Healthcare Reviewer",
 
-        response:
-            "CAREGUARD RESPONSE",
 
-        groundedAnswer:
-            "Grounded Answer",
 
-        evidenceGrounded:
-            "Evidence grounded",
+        healthcareUser:
 
-        policyProvenance:
-            "POLICY PROVENANCE",
+            "Healthcare User",
 
-        evidenceViewer:
-            "Evidence Viewer",
 
-        sources:
-            "Sources",
 
-        fullyTraceable:
-            "Fully Traceable",
+        governedHealthcareAI:
 
-        policies:
-            "Policies",
+            "GOVERNED HEALTHCARE AI",
 
-        humanOversightTitle:
-            "HUMAN OVERSIGHT",
 
-        commandCenter:
-            "Reviewer Command Center",
 
-        commandDescription:
-            "Govern high-risk CareGuard requests, inspect policy provenance and record accountable decisions.",
+        heroTitle:
 
-        pending:
-            "Pending",
+            "Governed decisions before AI responses",
 
-        approved:
-            "Approved",
 
-        rejected:
-            "Rejected",
 
-        totalReviews:
-            "Total Reviews",
+        heroDescription:
 
-        all:
-            "All",
+            "CareGuard evaluates approved evidence, clinical risk and human oversight before deciding whether to answer, safely refuse, or pause the workflow for human review.",
 
-        refresh:
-            "↻ Refresh",
 
-        noCases:
-            "No review cases found",
 
-        noCasesDescription:
-            "New escalated cases will appear here.",
+        approvedKnowledge:
 
-        reviewCase:
-            "REVIEW CASE",
+            "Approved knowledge only",
 
-        caseDetail:
-            "Case Detail",
 
-        close:
-            "Close",
 
-        status:
-            "Status",
+        askButton:
 
-        risk:
-            "Risk",
+            "Ask CareGuard",
 
-        evidence:
-            "Evidence",
 
-        requestedBy:
-            "Requested By",
 
-        question:
-            "Question",
+        analyzing:
 
-        created:
-            "Created",
+            "Analyzing",
 
-        policyProvenanceCase:
-            "Policy Provenance",
 
-        governanceTitle:
-            "GOVERNANCE",
 
-        auditTitle:
-            "Audit Trail",
+        demo:
 
-        auditDescription:
-            "Transparent tracking of the CareGuard decision lifecycle.",
+            "Demo:",
 
-        authenticated:
-            "User authenticated",
 
-        authenticatedDescription:
-            "Identity verified using Microsoft Entra ID.",
 
-        questionSubmitted:
-            "Question submitted",
+        normalPolicy:
 
-        waitingRequest:
-            "Waiting for request.",
+            "Normal policy question",
 
-        riskAssessed:
-            "Risk assessed",
 
-        waitingRisk:
-            "Waiting for governance assessment.",
 
-        governanceDecision:
-            "Governance decision",
+        evidenceConflict:
 
-        waitingRouting:
-            "Waiting for agent routing.",
+            "Evidence conflict",
 
-        humanReview:
-            "Human review",
 
-        notRequiredYet:
-            "Not required yet.",
 
-        insights:
-            "CAREGUARD INSIGHTS",
+        unsupported:
 
-        analyticsTitle:
-            "Analytics",
+            "Unsupported",
 
-        analyticsDescription:
-            "Hackathon session-level governance metrics.",
 
-        questions:
-            "Questions",
 
-        groundedAnswers:
-            "Grounded answers",
+        criticalRequest:
 
-        humanReviews:
-            "Human reviews",
+            "Critical request",
 
-        safeRefusals:
-            "Safe refusals",
 
-        highCritical:
-            "High / critical risk",
 
-        openCase:
-            "Open Case →",
+        careguardIntelligence:
 
-        evidenceLabel:
-            "Evidence:",
+            "CAREGUARD INTELLIGENCE",
 
-        policyId:
-            "Policy ID",
 
-        chunkId:
-            "Chunk ID",
 
-        section:
-            "Section",
+        governanceAssessment:
 
-        version:
-            "Version",
+            "Governance Assessment",
 
-        effectiveDate:
-            "Effective Date",
 
-        page:
-            "Page",
 
-        source:
-            "Source:",
+        riskLevel:
 
-        retrievedEvidence:
-            "Retrieved Evidence",
+            "Risk Level",
 
-        traceable:
-            "TRACEABLE",
 
-        partial:
-            "PARTIAL",
 
-        limited:
-            "LIMITED",
+        governance:
 
-        low:
-            "LOW",
+            "Governance",
 
-        medium:
-            "MEDIUM",
 
-        high:
-            "HIGH",
 
-        critical:
-            "CRITICAL",
+        evidenceStrength:
 
-        answer:
-            "ANSWER",
+            "Evidence Strength",
 
-        refuse:
-            "REFUSE",
 
-        humanReviewDecision:
-            "HUMAN REVIEW",
 
-        action:
-            "ACTION",
+        humanOversight:
 
-        required:
-            "REQUIRED",
+            "Human Oversight",
 
-        notRequired:
-            "NOT REQUIRED",
 
-        error:
-            "ERROR",
 
-        notProvided:
-            "Not provided",
+        riskReason:
 
-    },
+            "Why CareGuard assigned this risk",
 
 
-    ar: {
 
-        askCareGuard:
-            "اسأل CareGuard",
+        humanReviewRequired:
 
-        askSubtitle:
-            "ذكاء اصطناعي محكوم يعتمد على المعرفة المعتمدة في المستشفى.",
+            "Human Review Required",
 
-        reviews:
-            "المراجعات",
 
-        auditTrail:
-            "سجل التدقيق",
 
-        analytics:
-            "التحليلات",
+        thread:
 
-        reviewer:
-            "مراجع",
+            "Thread:",
 
-        healthcareReviewer:
-            "مراجع الرعاية الصحية",
 
-        healthcareUser:
-            "مستخدم الرعاية الصحية",
 
-        governedHealthcareAI:
-            "ذكاء اصطناعي محكوم للرعاية الصحية",
+        reject:
 
-        heroTitle:
-            "كيف يمكن لـ CareGuard مساعدتك؟",
+            "Reject",
 
-        heroDescription:
-            "اسأل عن سياسات المستشفى وإجراءاته والعمليات السريرية المعتمدة. يقوم CareGuard بتقييم الأدلة ومصدرها ومخاطر الحوكمة قبل الاستجابة.",
 
-        approvedKnowledge:
-            "المعرفة المعتمدة فقط",
 
-        askButton:
-            "اسأل CareGuard",
+        approve:
 
-        analyzing:
-            "جارٍ التحليل",
+            "Approve",
 
-        demo:
-            "أمثلة:",
 
-        normalPolicy:
-            "سؤال عن سياسة",
 
-        evidenceConflict:
-            "تعارض مع الدليل",
+        response:
 
-        unsupported:
-            "غير مدعوم",
+            "CAREGUARD RESPONSE",
 
-        criticalRequest:
-            "طلب حرج",
 
-        careguardIntelligence:
-            "ذكاء CAREGUARD",
 
-        governanceAssessment:
-            "تقييم الحوكمة",
+        groundedAnswer:
 
-        riskLevel:
-            "مستوى المخاطر",
+            "Grounded Answer",
 
-        governance:
-            "الحوكمة",
 
-        evidenceStrength:
-            "قوة الدليل",
 
-        humanOversight:
-            "الإشراف البشري",
+        evidenceGrounded:
 
-        riskReason:
-            "سبب تصنيف CareGuard لهذه المخاطر",
+            "Evidence grounded",
 
-        humanReviewRequired:
-            "مطلوب مراجعة بشرية",
 
-        thread:
-            "المعرّف:",
 
-        reject:
-            "رفض",
+        policyProvenance:
 
-        approve:
-            "موافقة",
+            "POLICY PROVENANCE",
 
-        response:
-            "استجابة CAREGUARD",
 
-        groundedAnswer:
-            "إجابة مستندة إلى الأدلة",
 
-        evidenceGrounded:
-            "مستند إلى الأدلة",
+        evidenceViewer:
 
-        policyProvenance:
-            "مصدر السياسة",
+            "Evidence Viewer",
 
-        evidenceViewer:
-            "عارض الأدلة",
 
-        sources:
-            "المصادر",
 
-        fullyTraceable:
-            "قابل للتتبع بالكامل",
+        sources:
 
-        policies:
-            "السياسات",
+            "Sources",
 
-        humanOversightTitle:
-            "الإشراف البشري",
 
-        commandCenter:
-            "مركز قيادة المراجعين",
 
-        commandDescription:
-            "إدارة طلبات CareGuard عالية المخاطر، وفحص مصادر الأدلة، وتسجيل قرارات المراجعة بشكل قابل للتدقيق.",
+        fullyTraceable:
 
-        pending:
-            "قيد الانتظار",
+            "Fully Traceable",
 
-        approved:
-            "تمت الموافقة",
 
-        rejected:
-            "مرفوض",
 
-        totalReviews:
-            "إجمالي المراجعات",
+        policies:
 
-        all:
-            "الكل",
+            "Policies",
 
-        refresh:
-            "↻ تحديث",
 
-        noCases:
-            "لا توجد حالات مراجعة",
 
-        noCasesDescription:
-            "ستظهر الحالات المحالة الجديدة هنا.",
+        humanOversightTitle:
 
-        reviewCase:
-            "حالة مراجعة",
+            "HUMAN OVERSIGHT",
 
-        caseDetail:
-            "تفاصيل الحالة",
 
-        close:
-            "إغلاق",
 
-        status:
-            "الحالة",
+        commandCenter:
 
-        risk:
-            "المخاطر",
+            "Reviewer Command Center",
 
-        evidence:
-            "الدليل",
 
-        requestedBy:
-            "مقدم الطلب",
 
-        question:
-            "السؤال",
+        commandDescription:
 
-        created:
-            "تاريخ الإنشاء",
+            "Govern high-risk CareGuard requests, inspect policy provenance and record accountable decisions.",
 
-        policyProvenanceCase:
-            "مصدر السياسة",
 
-        governanceTitle:
-            "الحوكمة",
 
-        auditTitle:
-            "سجل التدقيق",
+        pending:
 
-        auditDescription:
-            "تتبع شفاف لدورة قرار CareGuard.",
+            "Pending",
 
-        authenticated:
-            "تم التحقق من المستخدم",
 
-        authenticatedDescription:
-            "تم التحقق من الهوية باستخدام Microsoft Entra ID.",
 
-        questionSubmitted:
-            "تم إرسال السؤال",
+        approved:
 
-        waitingRequest:
-            "بانتظار الطلب.",
+            "Approved",
 
-        riskAssessed:
-            "تم تقييم المخاطر",
 
-        waitingRisk:
-            "بانتظار تقييم الحوكمة.",
 
-        governanceDecision:
-            "قرار الحوكمة",
+        rejected:
 
-        waitingRouting:
-            "بانتظار توجيه الوكيل.",
+            "Rejected",
 
-        humanReview:
-            "المراجعة البشرية",
 
-        notRequiredYet:
-            "غير مطلوبة حتى الآن.",
 
-        insights:
-            "رؤى CAREGUARD",
+        totalReviews:
 
-        analyticsTitle:
-            "التحليلات",
+            "Total Reviews",
 
-        analyticsDescription:
-            "مؤشرات حوكمة جلسة العرض التجريبي.",
 
-        questions:
-            "الأسئلة",
 
-        groundedAnswers:
-            "الإجابات المستندة إلى الأدلة",
+        all:
 
-        humanReviews:
-            "المراجعات البشرية",
+            "All",
 
-        safeRefusals:
-            "الرفض الآمن",
 
-        highCritical:
-            "مخاطر عالية / حرجة",
 
-        openCase:
-            "فتح الحالة ←",
+        refresh:
 
-        evidenceLabel:
-            "الدليل:",
+            "↻ Refresh",
 
-        policyId:
-            "معرف السياسة",
 
-        chunkId:
-            "معرف المقطع",
 
-        section:
-            "القسم",
+        noCases:
 
-        version:
-            "الإصدار",
+            "No review cases found",
 
-        effectiveDate:
-            "تاريخ السريان",
 
-        page:
-            "الصفحة",
 
-        source:
-            "المصدر:",
+        noCasesDescription:
 
-        retrievedEvidence:
-            "الدليل المسترجع",
+            "New escalated cases will appear here.",
 
-        traceable:
-            "قابل للتتبع",
 
-        partial:
-            "تتبع جزئي",
 
-        limited:
-            "تتبع محدود",
+        reviewCase:
 
-        low:
-            "منخفض",
+            "REVIEW CASE",
 
-        medium:
-            "متوسط",
 
-        high:
-            "مرتفع",
 
-        critical:
-            "حرج",
+        caseDetail:
 
-        answer:
-            "إجابة",
+            "Case Detail",
 
-        refuse:
-            "رفض آمن",
 
-        humanReviewDecision:
-            "مراجعة بشرية",
 
-        action:
-            "إجراء",
+        close:
 
-        required:
-            "مطلوب",
+            "Close",
 
-        notRequired:
-            "غير مطلوب",
 
-        error:
-            "خطأ",
 
-        notProvided:
-            "غير متوفر",
+        status:
 
-    },
+            "Status",
+
+
+
+        risk:
+
+            "Risk",
+
+
+
+        evidence:
+
+            "Evidence",
+
+
+
+        requestedBy:
+
+            "Requested By",
+
+
+
+        question:
+
+            "Question",
+
+
+
+        created:
+
+            "Created",
+
+
+
+        policyProvenanceCase:
+
+            "Policy Provenance",
+
+
+
+        governanceTitle:
+
+            "GOVERNANCE",
+
+
+
+        auditTitle:
+
+            "Audit Trail",
+
+
+
+        auditDescription:
+
+            "Transparent tracking of the CareGuard decision lifecycle.",
+
+
+
+        authenticated:
+
+            "User authenticated",
+
+
+
+        authenticatedDescription:
+
+            "Identity verified using Microsoft Entra ID.",
+
+
+
+        questionSubmitted:
+
+            "Question submitted",
+
+
+
+        waitingRequest:
+
+            "Waiting for request.",
+
+
+
+        riskAssessed:
+
+            "Risk assessed",
+
+
+
+        waitingRisk:
+
+            "Waiting for governance assessment.",
+
+
+
+        governanceDecision:
+
+            "Governance decision",
+
+
+
+        waitingRouting:
+
+            "Waiting for agent routing.",
+
+
+
+        humanReview:
+
+            "Human review",
+
+
+
+        notRequiredYet:
+
+            "Not required yet.",
+
+
+
+        insights:
+
+            "CAREGUARD INSIGHTS",
+
+
+
+        analyticsTitle:
+
+            "Analytics",
+
+
+
+        analyticsDescription:
+
+            "Hackathon session-level governance metrics.",
+
+
+
+        questions:
+
+            "Questions",
+
+
+
+        groundedAnswers:
+
+            "Grounded answers",
+
+
+
+        humanReviews:
+
+            "Human reviews",
+
+
+
+        safeRefusals:
+
+            "Safe refusals",
+
+
+
+        highCritical:
+
+            "High / critical risk",
+
+
+
+        openCase:
+
+            "Open Case →",
+
+
+
+        evidenceLabel:
+
+            "Evidence:",
+
+
+
+        policyId:
+
+            "Policy ID",
+
+
+
+        chunkId:
+
+            "Chunk ID",
+
+
+
+        section:
+
+            "Section",
+
+
+
+        version:
+
+            "Version",
+
+
+
+        effectiveDate:
+
+            "Effective Date",
+
+
+
+        page:
+
+            "Page",
+
+
+
+        source:
+
+            "Source:",
+
+
+
+        retrievedEvidence:
+
+            "Retrieved Evidence",
+
+
+
+        traceable:
+
+            "TRACEABLE",
+
+
+
+        partial:
+
+            "PARTIAL",
+
+
+
+        limited:
+
+            "LIMITED",
+
+
+
+        low:
+
+            "LOW",
+
+
+
+        medium:
+
+            "MEDIUM",
+
+
+
+        high:
+
+            "HIGH",
+
+
+
+        critical:
+
+            "CRITICAL",
+
+
+
+        answer:
+
+            "ANSWER",
+
+
+
+        refuse:
+
+            "REFUSE",
+
+
+
+        humanReviewDecision:
+
+            "HUMAN REVIEW",
+
+
+
+        action:
+
+            "ACTION",
+
+
+
+        required:
+
+            "REQUIRED",
+
+
+
+        notRequired:
+
+            "NOT REQUIRED",
+
+
+
+        error:
+
+            "ERROR",
+
+
+
+        notProvided:
+
+            "Not provided",
+
+
+
+    },
+
+
+
+
+
+    ar: {
+
+
+
+        askCareGuard:
+
+            "اسأل CareGuard",
+
+
+
+        askSubtitle:
+
+            "حوكمة واعية بالأدلة تعتمد على المعرفة المعتمدة في المستشفى.",
+
+
+
+        reviews:
+
+            "المراجعات",
+
+
+
+        auditTrail:
+
+            "سجل التدقيق",
+
+
+
+        analytics:
+
+            "التحليلات",
+
+
+
+        reviewer:
+
+            "مراجع",
+
+
+
+        healthcareReviewer:
+
+            "مراجع الرعاية الصحية",
+
+
+
+        healthcareUser:
+
+            "مستخدم الرعاية الصحية",
+
+
+
+        governedHealthcareAI:
+
+            "ذكاء اصطناعي محكوم للرعاية الصحية",
+
+
+
+        heroTitle:
+
+            "قرارات محكومة قبل استجابات الذكاء الاصطناعي",
+
+
+
+        heroDescription:
+
+            "يقوم CareGuard بتقييم الأدلة المعتمدة والمخاطر السريرية والحاجة إلى الإشراف البشري قبل أن يقرر ما إذا كان سيجيب أو يرفض بأمان أو يوقف سير العمل للمراجعة البشرية.",
+
+
+
+        approvedKnowledge:
+
+            "المعرفة المعتمدة فقط",
+
+
+
+        askButton:
+
+            "اسأل CareGuard",
+
+
+
+        analyzing:
+
+            "جارٍ التحليل",
+
+
+
+        demo:
+
+            "أمثلة:",
+
+
+
+        normalPolicy:
+
+            "سؤال عن سياسة",
+
+
+
+        evidenceConflict:
+
+            "تعارض مع الدليل",
+
+
+
+        unsupported:
+
+            "غير مدعوم",
+
+
+
+        criticalRequest:
+
+            "طلب حرج",
+
+
+
+        careguardIntelligence:
+
+            "ذكاء CAREGUARD",
+
+
+
+        governanceAssessment:
+
+            "تقييم الحوكمة",
+
+
+
+        riskLevel:
+
+            "مستوى المخاطر",
+
+
+
+        governance:
+
+            "الحوكمة",
+
+
+
+        evidenceStrength:
+
+            "قوة الدليل",
+
+
+
+        humanOversight:
+
+            "الإشراف البشري",
+
+
+
+        riskReason:
+
+            "سبب تصنيف CareGuard لهذه المخاطر",
+
+
+
+        humanReviewRequired:
+
+            "مطلوب مراجعة بشرية",
+
+
+
+        thread:
+
+            "المعرّف:",
+
+
+
+        reject:
+
+            "رفض",
+
+
+
+        approve:
+
+            "موافقة",
+
+
+
+        response:
+
+            "استجابة CAREGUARD",
+
+
+
+        groundedAnswer:
+
+            "إجابة مستندة إلى الأدلة",
+
+
+
+        evidenceGrounded:
+
+            "مستند إلى الأدلة",
+
+
+
+        policyProvenance:
+
+            "مصدر السياسة",
+
+
+
+        evidenceViewer:
+
+            "عارض الأدلة",
+
+
+
+        sources:
+
+            "المصادر",
+
+
+
+        fullyTraceable:
+
+            "قابل للتتبع بالكامل",
+
+
+
+        policies:
+
+            "السياسات",
+
+
+
+        humanOversightTitle:
+
+            "الإشراف البشري",
+
+
+
+        commandCenter:
+
+            "مركز قيادة المراجعين",
+
+
+
+        commandDescription:
+
+            "إدارة طلبات CareGuard عالية المخاطر، وفحص مصادر الأدلة، وتسجيل قرارات المراجعة بشكل قابل للتدقيق.",
+
+
+
+        pending:
+
+            "قيد الانتظار",
+
+
+
+        approved:
+
+            "تمت الموافقة",
+
+
+
+        rejected:
+
+            "مرفوض",
+
+
+
+        totalReviews:
+
+            "إجمالي المراجعات",
+
+
+
+        all:
+
+            "الكل",
+
+
+
+        refresh:
+
+            "↻ تحديث",
+
+
+
+        noCases:
+
+            "لا توجد حالات مراجعة",
+
+
+
+        noCasesDescription:
+
+            "ستظهر الحالات المحالة الجديدة هنا.",
+
+
+
+        reviewCase:
+
+            "حالة مراجعة",
+
+
+
+        caseDetail:
+
+            "تفاصيل الحالة",
+
+
+
+        close:
+
+            "إغلاق",
+
+
+
+        status:
+
+            "الحالة",
+
+
+
+        risk:
+
+            "المخاطر",
+
+
+
+        evidence:
+
+            "الدليل",
+
+
+
+        requestedBy:
+
+            "مقدم الطلب",
+
+
+
+        question:
+
+            "السؤال",
+
+
+
+        created:
+
+            "تاريخ الإنشاء",
+
+
+
+        policyProvenanceCase:
+
+            "مصدر السياسة",
+
+
+
+        governanceTitle:
+
+            "الحوكمة",
+
+
+
+        auditTitle:
+
+            "سجل التدقيق",
+
+
+
+        auditDescription:
+
+            "تتبع شفاف لدورة قرار CareGuard.",
+
+
+
+        authenticated:
+
+            "تم التحقق من المستخدم",
+
+
+
+        authenticatedDescription:
+
+            "تم التحقق من الهوية باستخدام Microsoft Entra ID.",
+
+
+
+        questionSubmitted:
+
+            "تم إرسال السؤال",
+
+
+
+        waitingRequest:
+
+            "بانتظار الطلب.",
+
+
+
+        riskAssessed:
+
+            "تم تقييم المخاطر",
+
+
+
+        waitingRisk:
+
+            "بانتظار تقييم الحوكمة.",
+
+
+
+        governanceDecision:
+
+            "قرار الحوكمة",
+
+
+
+        waitingRouting:
+
+            "بانتظار توجيه الوكيل.",
+
+
+
+        humanReview:
+
+            "المراجعة البشرية",
+
+
+
+        notRequiredYet:
+
+            "غير مطلوبة حتى الآن.",
+
+
+
+        insights:
+
+            "رؤى CAREGUARD",
+
+
+
+        analyticsTitle:
+
+            "التحليلات",
+
+
+
+        analyticsDescription:
+
+            "مؤشرات حوكمة جلسة العرض التجريبي.",
+
+
+
+        questions:
+
+            "الأسئلة",
+
+
+
+        groundedAnswers:
+
+            "الإجابات المستندة إلى الأدلة",
+
+
+
+        humanReviews:
+
+            "المراجعات البشرية",
+
+
+
+        safeRefusals:
+
+            "الرفض الآمن",
+
+
+
+        highCritical:
+
+            "مخاطر عالية / حرجة",
+
+
+
+        openCase:
+
+            "فتح الحالة ←",
+
+
+
+        evidenceLabel:
+
+            "الدليل:",
+
+
+
+        policyId:
+
+            "معرف السياسة",
+
+
+
+        chunkId:
+
+            "معرف المقطع",
+
+
+
+        section:
+
+            "القسم",
+
+
+
+        version:
+
+            "الإصدار",
+
+
+
+        effectiveDate:
+
+            "تاريخ السريان",
+
+
+
+        page:
+
+            "الصفحة",
+
+
+
+        source:
+
+            "المصدر:",
+
+
+
+        retrievedEvidence:
+
+            "الدليل المسترجع",
+
+
+
+        traceable:
+
+            "قابل للتتبع",
+
+
+
+        partial:
+
+            "تتبع جزئي",
+
+
+
+        limited:
+
+            "تتبع محدود",
+
+
+
+        low:
+
+            "منخفض",
+
+
+
+        medium:
+
+            "متوسط",
+
+
+
+        high:
+
+            "مرتفع",
+
+
+
+        critical:
+
+            "حرج",
+
+
+
+        answer:
+
+            "إجابة",
+
+
+
+        refuse:
+
+            "رفض آمن",
+
+
+
+        humanReviewDecision:
+
+            "مراجعة بشرية",
+
+
+
+        action:
+
+            "إجراء",
+
+
+
+        required:
+
+            "مطلوب",
+
+
+
+        notRequired:
+
+            "غير مطلوب",
+
+
+
+        error:
+
+            "خطأ",
+
+
+
+        notProvided:
+
+            "غير متوفر",
+
+
+
+    },
+
+
 
 };
 
 
+
+
+
 /* ============================================================= */
-/* HELPERS                                                       */
+
+/* HELPERS                                                       */
+
 /* ============================================================= */
+
+
+
 
 
 function t(
-    key,
+
+    key,
+
 ) {
 
-    return (
-        translations[
-            careGuardLanguage
-        ]?.[key]
-        || translations.en[key]
-        || key
-    );
+
+
+    return (
+
+        translations[
+
+            careGuardLanguage
+
+        ]?.[key]
+
+        || translations.en[key]
+
+        || key
+
+    );
+
+
 
 }
+
+
+
 
 
 function setElementText(
-    selector,
-    value,
+
+    selector,
+
+    value,
+
 ) {
 
-    const element =
-        document.querySelector(
-            selector
-        );
 
 
-    if (
-        element
-        && element.textContent
-            !== value
-    ) {
+    const element =
 
-        element.textContent =
-            value;
+        document.querySelector(
 
-    }
+            selector
+
+        );
+
+
+
+
+
+    if (
+
+        element
+
+        && element.textContent
+
+            !== value
+
+    ) {
+
+
+
+        element.textContent =
+
+            value;
+
+
+
+    }
+
+
 
 }
+
+
+
 
 
 function setAllText(
-    selector,
-    values,
+
+    selector,
+
+    values,
+
 ) {
 
-    document
-        .querySelectorAll(
-            selector
-        )
-        .forEach(
-            (
-                element,
-                index
-            ) => {
 
-                if (
-                    values[index]
-                    !== undefined
-                ) {
 
-                    element.textContent =
-                        values[index];
+    document
 
-                }
+        .querySelectorAll(
 
-            }
-        );
+            selector
+
+        )
+
+        .forEach(
+
+            (
+
+                element,
+
+                index
+
+            ) => {
+
+
+
+                if (
+
+                    values[index]
+
+                    !== undefined
+
+                ) {
+
+
+
+                    element.textContent =
+
+                        values[index];
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* SWITCHER                                                      */
+
+/* SWITCHER                                                      */
+
 /* ============================================================= */
+
+
+
 
 
 function createLanguageSwitcher() {
 
-    if (
-        document.querySelector(
-            ".language-switcher"
-        )
-    ) {
-
-        return;
-
-    }
 
 
-    const userArea =
-        document.querySelector(
-            ".user-area"
-        );
+    if (
+
+        document.querySelector(
+
+            ".language-switcher"
+
+        )
+
+    ) {
 
 
-    if (!userArea) {
 
-        return;
-
-    }
+        return;
 
 
-    const wrapper =
-        document.createElement(
-            "div"
-        );
+
+    }
 
 
-    wrapper.className =
-        "language-switcher";
 
 
-    wrapper.innerHTML = `
-        <button
-            id="language-en"
-            class="language-button"
-            type="button"
-        >
-            English
-        </button>
 
-        <button
-            id="language-ar"
-            class="language-button"
-            type="button"
-        >
-            العربية
-        </button>
-    `;
+    const userArea =
+
+        document.querySelector(
+
+            ".user-area"
+
+        );
 
 
-    userArea.insertBefore(
-        wrapper,
-        userArea.firstChild
-    );
 
 
-    document
-        .getElementById(
-            "language-en"
-        )
-        .addEventListener(
-            "click",
-            () => {
 
-                setLanguage(
-                    "en"
-                );
-
-            }
-        );
+    if (!userArea) {
 
 
-    document
-        .getElementById(
-            "language-ar"
-        )
-        .addEventListener(
-            "click",
-            () => {
 
-                setLanguage(
-                    "ar"
-                );
+        return;
 
-            }
-        );
+
+
+    }
+
+
+
+
+
+    const wrapper =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+
+
+
+
+    wrapper.className =
+
+        "language-switcher";
+
+
+
+
+
+    wrapper.innerHTML = `
+
+        <button
+
+            id="language-en"
+
+            class="language-button"
+
+            type="button"
+
+        >
+
+            English
+
+        </button>
+
+
+
+        <button
+
+            id="language-ar"
+
+            class="language-button"
+
+            type="button"
+
+        >
+
+            العربية
+
+        </button>
+
+    `;
+
+
+
+
+
+    userArea.insertBefore(
+
+        wrapper,
+
+        userArea.firstChild
+
+    );
+
+
+
+
+
+    document
+
+        .getElementById(
+
+            "language-en"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            () => {
+
+
+
+                setLanguage(
+
+                    "en"
+
+                );
+
+
+
+            }
+
+        );
+
+
+
+
+
+    document
+
+        .getElementById(
+
+            "language-ar"
+
+        )
+
+        .addEventListener(
+
+            "click",
+
+            () => {
+
+
+
+                setLanguage(
+
+                    "ar"
+
+                );
+
+
+
+            }
+
+        );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* STATIC UI                                                     */
+
+/* STATIC UI                                                     */
+
 /* ============================================================= */
+
+
+
 
 
 function translateNavigation() {
 
-    document
-        .querySelectorAll(
-            ".nav-item"
-        )
-        .forEach(
-            item => {
-
-                const section =
-                    item.dataset.section;
 
 
-                const badge =
-                    item.querySelector(
-                        ".nav-badge"
-                    );
+    document
+
+        .querySelectorAll(
+
+            ".nav-item"
+
+        )
+
+        .forEach(
+
+            item => {
 
 
-                let label =
-                    "";
+
+                const section =
+
+                    item.dataset.section;
 
 
-                if (
-                    section === "ask"
-                ) {
-
-                    label =
-                        `✦ ${t("askCareGuard")}`;
-
-                } else if (
-                    section === "reviews"
-                ) {
-
-                    label =
-                        `✓ ${t("reviews")}`;
-
-                } else if (
-                    section === "audit"
-                ) {
-
-                    label =
-                        `◫ ${t("auditTrail")}`;
-
-                } else if (
-                    section === "analytics"
-                ) {
-
-                    label =
-                        `◒ ${t("analytics")}`;
-
-                }
 
 
-                Array
-                    .from(
-                        item.childNodes
-                    )
-                    .filter(
-                        node =>
-                            node.nodeType
-                            === Node.TEXT_NODE
-                    )
-                    .forEach(
-                        node => {
 
-                            node.remove();
+                const badge =
 
-                        }
-                    );
+                    item.querySelector(
+
+                        ".nav-badge"
+
+                    );
 
 
-                item.insertBefore(
-                    document.createTextNode(
-                        `${label} `
-                    ),
-                    item.firstChild
-                );
 
 
-                if (
-                    badge
-                    && badge.parentElement
-                        !== item
-                ) {
 
-                    item.appendChild(
-                        badge
-                    );
+                let label =
 
-                }
+                    "";
 
-            }
-        );
+
+
+
+
+                if (
+
+                    section === "ask"
+
+                ) {
+
+
+
+                    label =
+
+                        `✦ ${t("askCareGuard")}`;
+
+
+
+                } else if (
+
+                    section === "reviews"
+
+                ) {
+
+
+
+                    label =
+
+                        `✓ ${t("reviews")}`;
+
+
+
+                } else if (
+
+                    section === "audit"
+
+                ) {
+
+
+
+                    label =
+
+                        `◫ ${t("auditTrail")}`;
+
+
+
+                } else if (
+
+                    section === "analytics"
+
+                ) {
+
+
+
+                    label =
+
+                        `◒ ${t("analytics")}`;
+
+
+
+                }
+
+
+
+
+
+                Array
+
+                    .from(
+
+                        item.childNodes
+
+                    )
+
+                    .filter(
+
+                        node =>
+
+                            node.nodeType
+
+                            === Node.TEXT_NODE
+
+                    )
+
+                    .forEach(
+
+                        node => {
+
+
+
+                            node.remove();
+
+
+
+                        }
+
+                    );
+
+
+
+
+
+                item.insertBefore(
+
+                    document.createTextNode(
+
+                        `${label} `
+
+                    ),
+
+                    item.firstChild
+
+                );
+
+
+
+
+
+                if (
+
+                    badge
+
+                    && badge.parentElement
+
+                        !== item
+
+                ) {
+
+
+
+                    item.appendChild(
+
+                        badge
+
+                    );
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
 
 }
+
+
+
 
 
 function translatePageHeader() {
 
-    const activeSection =
-        document.querySelector(
-            ".nav-item.active"
-        )?.dataset.section
-        || "ask";
 
 
-    const titles = {
+    const activeSection =
 
-        ask:
-            t(
-                "askCareGuard"
-            ),
+        document.querySelector(
 
-        reviews:
-            t(
-                "commandCenter"
-            ),
+            ".nav-item.active"
 
-        audit:
-            t(
-                "auditTitle"
-            ),
+        )?.dataset.section
 
-        analytics:
-            t(
-                "analyticsTitle"
-            ),
-
-    };
+        || "ask";
 
 
-    const subtitles = {
-
-        ask:
-            t(
-                "askSubtitle"
-            ),
-
-        reviews:
-            t(
-                "commandDescription"
-            ),
-
-        audit:
-            t(
-                "auditDescription"
-            ),
-
-        analytics:
-            t(
-                "analyticsDescription"
-            ),
-
-    };
 
 
-    setElementText(
-        "#page-title",
-        titles[
-            activeSection
-        ]
-    );
+
+    const titles = {
 
 
-    setElementText(
-        "#page-subtitle",
-        subtitles[
-            activeSection
-        ]
-    );
+
+        ask:
+
+            t(
+
+                "askCareGuard"
+
+            ),
+
+
+
+        reviews:
+
+            t(
+
+                "commandCenter"
+
+            ),
+
+
+
+        audit:
+
+            t(
+
+                "auditTitle"
+
+            ),
+
+
+
+        analytics:
+
+            t(
+
+                "analyticsTitle"
+
+            ),
+
+
+
+    };
+
+
+
+
+
+    const subtitles = {
+
+
+
+        ask:
+
+            t(
+
+                "askSubtitle"
+
+            ),
+
+
+
+        reviews:
+
+            t(
+
+                "commandDescription"
+
+            ),
+
+
+
+        audit:
+
+            t(
+
+                "auditDescription"
+
+            ),
+
+
+
+        analytics:
+
+            t(
+
+                "analyticsDescription"
+
+            ),
+
+
+
+    };
+
+
+
+
+
+    setElementText(
+
+        "#page-title",
+
+        titles[
+
+            activeSection
+
+        ]
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#page-subtitle",
+
+        subtitles[
+
+            activeSection
+
+        ]
+
+    );
+
+
 
 }
+
+
+
 
 
 function translateAskScreen() {
 
-    setElementText(
-        "#section-ask .hero .eyebrow",
-        t(
-            "governedHealthcareAI"
-        )
-    );
 
 
-    setElementText(
-        "#section-ask .hero h1",
-        t(
-            "heroTitle"
-        )
-    );
+    setElementText(
+
+        "#section-ask .hero .eyebrow",
+
+        t(
+
+            "governedHealthcareAI"
+
+        )
+
+    );
 
 
-    setElementText(
-        "#section-ask .hero p",
-        t(
-            "heroDescription"
-        )
-    );
 
 
-    setElementText(
-        ".knowledge-chip",
-        t(
-            "approvedKnowledge"
-        )
-    );
+
+    setElementText(
+
+        "#section-ask .hero h1",
+
+        t(
+
+            "heroTitle"
+
+        )
+
+    );
 
 
-    const askButtonText =
-        document.getElementById(
-            "ask-button-text"
-        );
 
 
-    if (
-        askButtonText
-        && !askButtonText.textContent
-            .toLowerCase()
-            .includes(
-                "analy"
-            )
-    ) {
 
-        askButtonText.textContent =
-            t(
-                "askButton"
-            );
+    setElementText(
 
-    }
+        "#section-ask .hero p",
+
+        t(
+
+            "heroDescription"
+
+        )
+
+    );
 
 
-    setAllText(
-        ".example-question",
-        [
-            t(
-                "normalPolicy"
-            ),
-            t(
-                "evidenceConflict"
-            ),
-            t(
-                "unsupported"
-            ),
-            t(
-                "criticalRequest"
-            ),
-        ]
-    );
 
 
-    const demoLabel =
-        document.querySelector(
-            ".example-row > span"
-        );
+
+    setElementText(
+
+        ".knowledge-chip",
+
+        t(
+
+            "approvedKnowledge"
+
+        )
+
+    );
 
 
-    if (
-        demoLabel
-    ) {
-
-        demoLabel.textContent =
-            t(
-                "demo"
-            );
-
-    }
 
 
-    setElementText(
-        ".intelligence-title .eyebrow",
-        t(
-            "careguardIntelligence"
-        )
-    );
+
+    const askButtonText =
+
+        document.getElementById(
+
+            "ask-button-text"
+
+        );
 
 
-    setElementText(
-        ".intelligence-title h2",
-        t(
-            "governanceAssessment"
-        )
-    );
 
 
-    setAllText(
-        ".intelligence-grid .metric-label",
-        [
-            t(
-                "riskLevel"
-            ),
-            t(
-                "governance"
-            ),
-            t(
-                "evidenceStrength"
-            ),
-            t(
-                "humanOversight"
-            ),
-        ]
-    );
+
+    if (
+
+        askButtonText
+
+        && !askButtonText.textContent
+
+            .toLowerCase()
+
+            .includes(
+
+                "analy"
+
+            )
+
+    ) {
 
 
-    setElementText(
-        ".risk-reason-label",
-        t(
-            "riskReason"
-        )
-    );
+
+        askButtonText.textContent =
+
+            t(
+
+                "askButton"
+
+            );
 
 
-    setElementText(
-        ".review-title",
-        t(
-            "humanReviewRequired"
-        )
-    );
+
+    }
 
 
-    setElementText(
-        "#reject-button",
-        t(
-            "reject"
-        )
-    );
 
 
-    setElementText(
-        "#approve-button",
-        t(
-            "approve"
-        )
-    );
+
+    setAllText(
+
+        ".example-question",
+
+        [
+
+            t(
+
+                "normalPolicy"
+
+            ),
+
+            t(
+
+                "evidenceConflict"
+
+            ),
+
+            t(
+
+                "unsupported"
+
+            ),
+
+            t(
+
+                "criticalRequest"
+
+            ),
+
+        ]
+
+    );
 
 
-    setElementText(
-        "#answer-card .eyebrow",
-        t(
-            "response"
-        )
-    );
 
 
-    setElementText(
-        "#answer-card h2",
-        t(
-            "groundedAnswer"
-        )
-    );
+
+    const demoLabel =
+
+        document.querySelector(
+
+            ".example-row > span"
+
+        );
 
 
-    setElementText(
-        ".grounded-chip",
-        t(
-            "evidenceGrounded"
-        )
-    );
 
 
-    setElementText(
-        "#provenance-card .eyebrow",
-        t(
-            "policyProvenance"
-        )
-    );
+
+    if (
+
+        demoLabel
+
+    ) {
 
 
-    setElementText(
-        "#provenance-card h2",
-        t(
-            "evidenceViewer"
-        )
-    );
+
+        demoLabel.textContent =
+
+            t(
+
+                "demo"
+
+            );
 
 
-    setAllText(
-        ".provenance-summary-label",
-        [
-            t(
-                "sources"
-            ),
-            t(
-                "fullyTraceable"
-            ),
-            t(
-                "policies"
-            ),
-        ]
-    );
+
+    }
+
+
+
+
+
+    setElementText(
+
+        ".intelligence-title .eyebrow",
+
+        t(
+
+            "careguardIntelligence"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        ".intelligence-title h2",
+
+        t(
+
+            "governanceAssessment"
+
+        )
+
+    );
+
+
+
+
+
+    setAllText(
+
+        ".intelligence-grid .metric-label",
+
+        [
+
+            t(
+
+                "riskLevel"
+
+            ),
+
+            t(
+
+                "governance"
+
+            ),
+
+            t(
+
+                "evidenceStrength"
+
+            ),
+
+            t(
+
+                "humanOversight"
+
+            ),
+
+        ]
+
+    );
+
+
+
+
+
+    setElementText(
+
+        ".risk-reason-label",
+
+        t(
+
+            "riskReason"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        ".review-title",
+
+        t(
+
+            "humanReviewRequired"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#reject-button",
+
+        t(
+
+            "reject"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#approve-button",
+
+        t(
+
+            "approve"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#answer-card .eyebrow",
+
+        t(
+
+            "response"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#answer-card h2",
+
+        t(
+
+            "groundedAnswer"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        ".grounded-chip",
+
+        t(
+
+            "evidenceGrounded"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#provenance-card .eyebrow",
+
+        t(
+
+            "policyProvenance"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#provenance-card h2",
+
+        t(
+
+            "evidenceViewer"
+
+        )
+
+    );
+
+
+
+
+
+    setAllText(
+
+        ".provenance-summary-label",
+
+        [
+
+            t(
+
+                "sources"
+
+            ),
+
+            t(
+
+                "fullyTraceable"
+
+            ),
+
+            t(
+
+                "policies"
+
+            ),
+
+        ]
+
+    );
+
+
 
 }
+
+
+
 
 
 function translateReviewsScreen() {
 
-    setElementText(
-        "#section-reviews .section-header .eyebrow",
-        t(
-            "humanOversightTitle"
-        )
-    );
 
 
-    setElementText(
-        "#section-reviews .section-header h1",
-        t(
-            "commandCenter"
-        )
-    );
+    setElementText(
+
+        "#section-reviews .section-header .eyebrow",
+
+        t(
+
+            "humanOversightTitle"
+
+        )
+
+    );
 
 
-    setElementText(
-        "#section-reviews .section-header p",
-        t(
-            "commandDescription"
-        )
-    );
 
 
-    setAllText(
-        ".review-stat-label",
-        [
-            t(
-                "pending"
-            ),
-            t(
-                "approved"
-            ),
-            t(
-                "rejected"
-            ),
-            t(
-                "totalReviews"
-            ),
-        ]
-    );
+
+    setElementText(
+
+        "#section-reviews .section-header h1",
+
+        t(
+
+            "commandCenter"
+
+        )
+
+    );
 
 
-    setAllText(
-        ".review-filter",
-        [
-            t(
-                "pending"
-            ),
-            t(
-                "approved"
-            ),
-            t(
-                "rejected"
-            ),
-            t(
-                "all"
-            ),
-        ]
-    );
 
 
-    setElementText(
-        "#refresh-reviews-button",
-        t(
-            "refresh"
-        )
-    );
+
+    setElementText(
+
+        "#section-reviews .section-header p",
+
+        t(
+
+            "commandDescription"
+
+        )
+
+    );
 
 
-    setElementText(
-        "#review-empty h3",
-        t(
-            "noCases"
-        )
-    );
 
 
-    setElementText(
-        "#review-empty p",
-        t(
-            "noCasesDescription"
-        )
-    );
+
+    setAllText(
+
+        ".review-stat-label",
+
+        [
+
+            t(
+
+                "pending"
+
+            ),
+
+            t(
+
+                "approved"
+
+            ),
+
+            t(
+
+                "rejected"
+
+            ),
+
+            t(
+
+                "totalReviews"
+
+            ),
+
+        ]
+
+    );
 
 
-    setElementText(
-        "#review-case-panel .eyebrow",
-        t(
-            "reviewCase"
-        )
-    );
 
 
-    setElementText(
-        "#review-case-panel h2",
-        t(
-            "caseDetail"
-        )
-    );
+
+    setAllText(
+
+        ".review-filter",
+
+        [
+
+            t(
+
+                "pending"
+
+            ),
+
+            t(
+
+                "approved"
+
+            ),
+
+            t(
+
+                "rejected"
+
+            ),
+
+            t(
+
+                "all"
+
+            ),
+
+        ]
+
+    );
 
 
-    setElementText(
-        "#close-review-case",
-        t(
-            "close"
-        )
-    );
 
 
-    setAllText(
-        ".case-meta .case-label",
-        [
-            t(
-                "status"
-            ),
-            t(
-                "risk"
-            ),
-            t(
-                "evidence"
-            ),
-            t(
-                "requestedBy"
-            ),
-        ]
-    );
+
+    setElementText(
+
+        "#refresh-reviews-button",
+
+        t(
+
+            "refresh"
+
+        )
+
+    );
 
 
-    const caseLabels =
-        document.querySelectorAll(
-            ".case-section > .case-label"
-        );
 
 
-    const labelValues = [
-        t(
-            "question"
-        ),
-        t(
-            "riskReason"
-        ),
-        "Thread ID",
-        t(
-            "created"
-        ),
-        t(
-            "reviewer"
-        ),
-        t(
-            "policyProvenanceCase"
-        ),
-    ];
+
+    setElementText(
+
+        "#review-empty h3",
+
+        t(
+
+            "noCases"
+
+        )
+
+    );
 
 
-    caseLabels.forEach(
-        (
-            element,
-            index
-        ) => {
-
-            if (
-                labelValues[index]
-                !== undefined
-            ) {
-
-                element.textContent =
-                    labelValues[index];
-
-            }
-
-        }
-    );
 
 
-    setElementText(
-        "#case-reject-button",
-        t(
-            "reject"
-        )
-    );
+
+    setElementText(
+
+        "#review-empty p",
+
+        t(
+
+            "noCasesDescription"
+
+        )
+
+    );
 
 
-    setElementText(
-        "#case-approve-button",
-        t(
-            "approve"
-        )
-    );
+
+
+
+    setElementText(
+
+        "#review-case-panel .eyebrow",
+
+        t(
+
+            "reviewCase"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#review-case-panel h2",
+
+        t(
+
+            "caseDetail"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#close-review-case",
+
+        t(
+
+            "close"
+
+        )
+
+    );
+
+
+
+
+
+    setAllText(
+
+        ".case-meta .case-label",
+
+        [
+
+            t(
+
+                "status"
+
+            ),
+
+            t(
+
+                "risk"
+
+            ),
+
+            t(
+
+                "evidence"
+
+            ),
+
+            t(
+
+                "requestedBy"
+
+            ),
+
+        ]
+
+    );
+
+
+
+
+
+    const caseLabels =
+
+        document.querySelectorAll(
+
+            ".case-section > .case-label"
+
+        );
+
+
+
+
+
+    const labelValues = [
+
+        t(
+
+            "question"
+
+        ),
+
+        t(
+
+            "riskReason"
+
+        ),
+
+        "Thread ID",
+
+        t(
+
+            "created"
+
+        ),
+
+        t(
+
+            "reviewer"
+
+        ),
+
+        t(
+
+            "policyProvenanceCase"
+
+        ),
+
+    ];
+
+
+
+
+
+    caseLabels.forEach(
+
+        (
+
+            element,
+
+            index
+
+        ) => {
+
+
+
+            if (
+
+                labelValues[index]
+
+                !== undefined
+
+            ) {
+
+
+
+                element.textContent =
+
+                    labelValues[index];
+
+
+
+            }
+
+
+
+        }
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#case-reject-button",
+
+        t(
+
+            "reject"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#case-approve-button",
+
+        t(
+
+            "approve"
+
+        )
+
+    );
+
+
 
 }
+
+
+
 
 
 function translateAuditScreen() {
 
-    setElementText(
-        "#section-audit .section-header .eyebrow",
-        t(
-            "governanceTitle"
-        )
-    );
 
 
-    setElementText(
-        "#section-audit .section-header h1",
-        t(
-            "auditTitle"
-        )
-    );
+    setElementText(
+
+        "#section-audit .section-header .eyebrow",
+
+        t(
+
+            "governanceTitle"
+
+        )
+
+    );
 
 
-    setElementText(
-        "#section-audit .section-header p",
-        t(
-            "auditDescription"
-        )
-    );
 
 
-    const titles =
-        document.querySelectorAll(
-            "#section-audit .timeline-item strong"
-        );
+
+    setElementText(
+
+        "#section-audit .section-header h1",
+
+        t(
+
+            "auditTitle"
+
+        )
+
+    );
 
 
-    const titleValues = [
-        t(
-            "authenticated"
-        ),
-        t(
-            "questionSubmitted"
-        ),
-        t(
-            "riskAssessed"
-        ),
-        t(
-            "governanceDecision"
-        ),
-        t(
-            "humanReview"
-        ),
-    ];
 
 
-    titles.forEach(
-        (
-            element,
-            index
-        ) => {
 
-            if (
-                titleValues[index]
-                !== undefined
-            ) {
+    setElementText(
 
-                element.textContent =
-                    titleValues[index];
+        "#section-audit .section-header p",
 
-            }
+        t(
 
-        }
-    );
+            "auditDescription"
+
+        )
+
+    );
+
+
+
+
+
+    const titles =
+
+        document.querySelectorAll(
+
+            "#section-audit .timeline-item strong"
+
+        );
+
+
+
+
+
+    const titleValues = [
+
+        t(
+
+            "authenticated"
+
+        ),
+
+        t(
+
+            "questionSubmitted"
+
+        ),
+
+        t(
+
+            "riskAssessed"
+
+        ),
+
+        t(
+
+            "governanceDecision"
+
+        ),
+
+        t(
+
+            "humanReview"
+
+        ),
+
+    ];
+
+
+
+
+
+    titles.forEach(
+
+        (
+
+            element,
+
+            index
+
+        ) => {
+
+
+
+            if (
+
+                titleValues[index]
+
+                !== undefined
+
+            ) {
+
+
+
+                element.textContent =
+
+                    titleValues[index];
+
+
+
+            }
+
+
+
+        }
+
+    );
+
+
 
 }
+
+
+
 
 
 function translateAnalyticsScreen() {
 
-    setElementText(
-        "#section-analytics .section-header .eyebrow",
-        t(
-            "insights"
-        )
-    );
 
 
-    setElementText(
-        "#section-analytics .section-header h1",
-        t(
-            "analyticsTitle"
-        )
-    );
+    setElementText(
+
+        "#section-analytics .section-header .eyebrow",
+
+        t(
+
+            "insights"
+
+        )
+
+    );
 
 
-    setElementText(
-        "#section-analytics .section-header p",
-        t(
-            "analyticsDescription"
-        )
-    );
 
 
-    setAllText(
-        "#section-analytics .analytics-label",
-        [
-            t(
-                "questions"
-            ),
-            t(
-                "groundedAnswers"
-            ),
-            t(
-                "humanReviews"
-            ),
-            t(
-                "safeRefusals"
-            ),
-            t(
-                "highCritical"
-            ),
-        ]
-    );
+
+    setElementText(
+
+        "#section-analytics .section-header h1",
+
+        t(
+
+            "analyticsTitle"
+
+        )
+
+    );
+
+
+
+
+
+    setElementText(
+
+        "#section-analytics .section-header p",
+
+        t(
+
+            "analyticsDescription"
+
+        )
+
+    );
+
+
+
+
+
+    setAllText(
+
+        "#section-analytics .analytics-label",
+
+        [
+
+            t(
+
+                "questions"
+
+            ),
+
+            t(
+
+                "groundedAnswers"
+
+            ),
+
+            t(
+
+                "humanReviews"
+
+            ),
+
+            t(
+
+                "safeRefusals"
+
+            ),
+
+            t(
+
+                "highCritical"
+
+            ),
+
+        ]
+
+    );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* DYNAMIC VALUES                                                */
+
+/* DYNAMIC VALUES                                                */
+
 /* ============================================================= */
+
+
+
 
 
 const tokenKeys = {
 
-    "LOW":
-        "low",
 
-    "MEDIUM":
-        "medium",
 
-    "HIGH":
-        "high",
+    "LOW":
 
-    "CRITICAL":
-        "critical",
+        "low",
 
-    "ANSWER":
-        "answer",
 
-    "REFUSE":
-        "refuse",
 
-    "HUMAN REVIEW":
-        "humanReviewDecision",
+    "MEDIUM":
 
-    "ACTION":
-        "action",
+        "medium",
 
-    "REQUIRED":
-        "required",
 
-    "NOT REQUIRED":
-        "notRequired",
 
-    "ERROR":
-        "error",
+    "HIGH":
 
-    "PENDING":
-        "pending",
+        "high",
 
-    "APPROVED":
-        "approved",
 
-    "REJECTED":
-        "rejected",
 
-    "TRACEABLE":
-        "traceable",
+    "CRITICAL":
 
-    "PARTIAL":
-        "partial",
+        "critical",
 
-    "LIMITED":
-        "limited",
+
+
+    "ANSWER":
+
+        "answer",
+
+
+
+    "REFUSE":
+
+        "refuse",
+
+
+
+    "HUMAN REVIEW":
+
+        "humanReviewDecision",
+
+
+
+    "ACTION":
+
+        "action",
+
+
+
+    "REQUIRED":
+
+        "required",
+
+
+
+    "NOT REQUIRED":
+
+        "notRequired",
+
+
+
+    "ERROR":
+
+        "error",
+
+
+
+    "PENDING":
+
+        "pending",
+
+
+
+    "APPROVED":
+
+        "approved",
+
+
+
+    "REJECTED":
+
+        "rejected",
+
+
+
+    "TRACEABLE":
+
+        "traceable",
+
+
+
+    "PARTIAL":
+
+        "partial",
+
+
+
+    "LIMITED":
+
+        "limited",
+
+
 
 };
 
 
+
+
+
 function translateKnownToken(
-    value,
+
+    value,
+
 ) {
 
-    const source =
-        String(
-            value
-            || ""
-        ).trim();
 
 
-    if (!source) {
+    const source =
 
-        return source;
+        String(
 
-    }
+            value
 
+            || ""
 
-    const allEnglish =
-        Object.keys(
-            tokenKeys
-        );
+        ).trim();
 
 
-    for (
-        const english
-        of allEnglish
-    ) {
-
-        const key =
-            tokenKeys[
-                english
-            ];
 
 
-        const arabic =
-            translations.ar[
-                key
-            ];
+
+    if (!source) {
 
 
-        const englishValue =
-            translations.en[
-                key
-            ];
+
+        return source;
 
 
-        if (
-            source.toUpperCase()
-            === englishValue.toUpperCase()
-            || source === arabic
-        ) {
 
-            return t(
-                key
-            );
-
-        }
-
-    }
+    }
 
 
-    return source;
+
+
+
+    const allEnglish =
+
+        Object.keys(
+
+            tokenKeys
+
+        );
+
+
+
+
+
+    for (
+
+        const english
+
+        of allEnglish
+
+    ) {
+
+
+
+        const key =
+
+            tokenKeys[
+
+                english
+
+            ];
+
+
+
+
+
+        const arabic =
+
+            translations.ar[
+
+                key
+
+            ];
+
+
+
+
+
+        const englishValue =
+
+            translations.en[
+
+                key
+
+            ];
+
+
+
+
+
+        if (
+
+            source.toUpperCase()
+
+            === englishValue.toUpperCase()
+
+            || source === arabic
+
+        ) {
+
+
+
+            return t(
+
+                key
+
+            );
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+    return source;
+
+
 
 }
+
+
+
 
 
 function translateDynamicContent() {
 
-    document
-        .querySelectorAll(
-            [
-                ".risk-value",
-                ".metric-value",
-                ".queue-risk",
-                ".queue-status",
-                ".traceability-chip",
-                ".provenance-chip",
-            ].join(",")
-        )
-        .forEach(
-            element => {
-
-                const translated =
-                    translateKnownToken(
-                        element.textContent
-                    );
 
 
-                if (
-                    translated
-                    !== element.textContent
-                ) {
+    document
 
-                    element.textContent =
-                        translated;
+        .querySelectorAll(
 
-                }
+            [
 
-            }
-        );
+                ".risk-value",
 
+                ".metric-value",
 
-    document
-        .querySelectorAll(
-            ".open-case-button"
-        )
-        .forEach(
-            element => {
+                ".queue-risk",
 
-                element.textContent =
-                    t(
-                        "openCase"
-                    );
+                ".queue-status",
 
-            }
-        );
+                ".traceability-chip",
+
+                ".provenance-chip",
+
+            ].join(",")
+
+        )
+
+        .forEach(
+
+            element => {
 
 
-    document
-        .querySelectorAll(
-            ".provenance-field-label"
-        )
-        .forEach(
-            element => {
 
-                const value =
-                    element.textContent
-                        .trim();
+                const translated =
+
+                    translateKnownToken(
+
+                        element.textContent
+
+                    );
 
 
-                const labelMap = {
-
-                    "Policy ID":
-                        "policyId",
-
-                    "معرف السياسة":
-                        "policyId",
-
-                    "Chunk ID":
-                        "chunkId",
-
-                    "معرف المقطع":
-                        "chunkId",
-
-                    "Section":
-                        "section",
-
-                    "القسم":
-                        "section",
-
-                    "Version":
-                        "version",
-
-                    "الإصدار":
-                        "version",
-
-                    "Effective Date":
-                        "effectiveDate",
-
-                    "تاريخ السريان":
-                        "effectiveDate",
-
-                    "Page":
-                        "page",
-
-                    "الصفحة":
-                        "page",
-
-                };
 
 
-                const key =
-                    labelMap[
-                        value
-                    ];
+
+                if (
+
+                    translated
+
+                    !== element.textContent
+
+                ) {
 
 
-                if (key) {
 
-                    element.textContent =
-                        t(
-                            key
-                        );
+                    element.textContent =
 
-                }
-
-            }
-        );
+                        translated;
 
 
-    document
-        .querySelectorAll(
-            ".evidence-excerpt-label"
-        )
-        .forEach(
-            element => {
 
-                element.textContent =
-                    t(
-                        "retrievedEvidence"
-                    );
-
-            }
-        );
+                }
 
 
-    document
-        .querySelectorAll(
-            ".provenance-field-value"
-        )
-        .forEach(
-            element => {
 
-                const value =
-                    element.textContent
-                        .trim();
+            }
+
+        );
 
 
-                if (
-                    value
-                    === "Not provided"
-                    || value
-                    === translations.ar.notProvided
-                ) {
 
-                    element.textContent =
-                        t(
-                            "notProvided"
-                        );
 
-                }
 
-            }
-        );
+    document
+
+        .querySelectorAll(
+
+            ".open-case-button"
+
+        )
+
+        .forEach(
+
+            element => {
+
+
+
+                element.textContent =
+
+                    t(
+
+                        "openCase"
+
+                    );
+
+
+
+            }
+
+        );
+
+
+
+
+
+    document
+
+        .querySelectorAll(
+
+            ".provenance-field-label"
+
+        )
+
+        .forEach(
+
+            element => {
+
+
+
+                const value =
+
+                    element.textContent
+
+                        .trim();
+
+
+
+
+
+                const labelMap = {
+
+
+
+                    "Policy ID":
+
+                        "policyId",
+
+
+
+                    "معرف السياسة":
+
+                        "policyId",
+
+
+
+                    "Chunk ID":
+
+                        "chunkId",
+
+
+
+                    "معرف المقطع":
+
+                        "chunkId",
+
+
+
+                    "Section":
+
+                        "section",
+
+
+
+                    "القسم":
+
+                        "section",
+
+
+
+                    "Version":
+
+                        "version",
+
+
+
+                    "الإصدار":
+
+                        "version",
+
+
+
+                    "Effective Date":
+
+                        "effectiveDate",
+
+
+
+                    "تاريخ السريان":
+
+                        "effectiveDate",
+
+
+
+                    "Page":
+
+                        "page",
+
+
+
+                    "الصفحة":
+
+                        "page",
+
+
+
+                };
+
+
+
+
+
+                const key =
+
+                    labelMap[
+
+                        value
+
+                    ];
+
+
+
+
+
+                if (key) {
+
+
+
+                    element.textContent =
+
+                        t(
+
+                            key
+
+                        );
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
+
+
+
+    document
+
+        .querySelectorAll(
+
+            ".evidence-excerpt-label"
+
+        )
+
+        .forEach(
+
+            element => {
+
+
+
+                element.textContent =
+
+                    t(
+
+                        "retrievedEvidence"
+
+                    );
+
+
+
+            }
+
+        );
+
+
+
+
+
+    document
+
+        .querySelectorAll(
+
+            ".provenance-field-value"
+
+        )
+
+        .forEach(
+
+            element => {
+
+
+
+                const value =
+
+                    element.textContent
+
+                        .trim();
+
+
+
+
+
+                if (
+
+                    value
+
+                    === "Not provided"
+
+                    || value
+
+                    === translations.ar.notProvided
+
+                ) {
+
+
+
+                    element.textContent =
+
+                        t(
+
+                            "notProvided"
+
+                        );
+
+
+
+                }
+
+
+
+            }
+
+        );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* APPLY LANGUAGE                                                */
+
+/* APPLY LANGUAGE                                                */
+
 /* ============================================================= */
+
+
+
 
 
 function applyLanguage() {
 
-    const isArabic =
-        careGuardLanguage
-        === "ar";
 
 
-    document.documentElement.lang =
-        careGuardLanguage;
+    const isArabic =
+
+        careGuardLanguage
+
+        === "ar";
 
 
-    document.documentElement.dir =
-        isArabic
-            ? "rtl"
-            : "ltr";
 
 
-    document.body.classList.toggle(
-        "lang-ar",
-        isArabic
-    );
+
+    document.documentElement.lang =
+
+        careGuardLanguage;
 
 
-    document
-        .getElementById(
-            "language-en"
-        )
-        ?.classList.toggle(
-            "active",
-            !isArabic
-        );
 
 
-    document
-        .getElementById(
-            "language-ar"
-        )
-        ?.classList.toggle(
-            "active",
-            isArabic
-        );
+
+    document.documentElement.dir =
+
+        isArabic
+
+            ? "rtl"
+
+            : "ltr";
 
 
-    translateNavigation();
 
-    translatePageHeader();
 
-    translateAskScreen();
 
-    translateReviewsScreen();
+    document.body.classList.toggle(
 
-    translateAuditScreen();
+        "lang-ar",
 
-    translateAnalyticsScreen();
+        isArabic
 
-    translateDynamicContent();
+    );
+
+
+
+
+
+    document
+
+        .getElementById(
+
+            "language-en"
+
+        )
+
+        ?.classList.toggle(
+
+            "active",
+
+            !isArabic
+
+        );
+
+
+
+
+
+    document
+
+        .getElementById(
+
+            "language-ar"
+
+        )
+
+        ?.classList.toggle(
+
+            "active",
+
+            isArabic
+
+        );
+
+
+
+
+
+    translateNavigation();
+
+
+
+    translatePageHeader();
+
+
+
+    translateAskScreen();
+
+
+
+    translateReviewsScreen();
+
+
+
+    translateAuditScreen();
+
+
+
+    translateAnalyticsScreen();
+
+
+
+    translateDynamicContent();
+
+
 
 }
+
+
+
 
 
 function setLanguage(
-    language,
+
+    language,
+
 ) {
 
-    careGuardLanguage =
-        (
-            language === "ar"
-            ? "ar"
-            : "en"
-        );
 
 
-    localStorage.setItem(
-        CAREGUARD_LANGUAGE_KEY,
-        careGuardLanguage
-    );
+    careGuardLanguage =
+
+        (
+
+            language === "ar"
+
+            ? "ar"
+
+            : "en"
+
+        );
 
 
-    applyLanguage();
+
+
+
+    localStorage.setItem(
+
+        CAREGUARD_LANGUAGE_KEY,
+
+        careGuardLanguage
+
+    );
+
+
+
+
+
+    applyLanguage();
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* OBSERVER FOR DYNAMIC CONTENT                                  */
+
+/* OBSERVER FOR DYNAMIC CONTENT                                  */
+
 /* ============================================================= */
+
+
+
 
 
 function scheduleTranslation() {
 
-    if (
-        translationScheduled
-    ) {
-
-        return;
-
-    }
 
 
-    translationScheduled =
-        true;
+    if (
+
+        translationScheduled
+
+    ) {
 
 
-    requestAnimationFrame(
-        () => {
 
-            translationScheduled =
-                false;
+        return;
 
 
-            translatePageHeader();
 
-            translateDynamicContent();
+    }
 
-        }
-    );
+
+
+
+
+    translationScheduled =
+
+        true;
+
+
+
+
+
+    requestAnimationFrame(
+
+        () => {
+
+
+
+            translationScheduled =
+
+                false;
+
+
+
+
+
+            translatePageHeader();
+
+
+
+            translateDynamicContent();
+
+
+
+        }
+
+    );
+
+
 
 }
+
+
+
 
 
 function startTranslationObserver() {
 
-    const observer =
-        new MutationObserver(
-            () => {
-
-                scheduleTranslation();
-
-            }
-        );
 
 
-    observer.observe(
-        document.body,
-        {
+    const observer =
 
-            childList:
-                true,
+        new MutationObserver(
 
-            subtree:
-                true,
+            () => {
 
-            characterData:
-                true,
 
-        }
-    );
+
+                scheduleTranslation();
+
+
+
+            }
+
+        );
+
+
+
+
+
+    observer.observe(
+
+        document.body,
+
+        {
+
+
+
+            childList:
+
+                true,
+
+
+
+            subtree:
+
+                true,
+
+
+
+            characterData:
+
+                true,
+
+
+
+        }
+
+    );
+
+
 
 }
 
 
+
+
+
 /* ============================================================= */
-/* STARTUP                                                       */
+
+/* STARTUP                                                       */
+
 /* ============================================================= */
+
+
+
 
 
 document.addEventListener(
-    "DOMContentLoaded",
-    () => {
 
-        createLanguageSwitcher();
+    "DOMContentLoaded",
 
-        applyLanguage();
+    () => {
 
-        startTranslationObserver();
 
-    }
+
+        createLanguageSwitcher();
+
+
+
+        applyLanguage();
+
+
+
+        startTranslationObserver();
+
+
+
+    }
+
 );
